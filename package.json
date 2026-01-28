@@ -8,9 +8,31 @@
     "start": "next start"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@react-three/fiber": "^9.5.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "@spaceymonk/react-radial-menu": "^2.1.0",
+    "@splinetool/react-spline": "^4.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.29.0",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.17",
+    "lucide-react": "^0.562.0",
+    "media-chrome": "^4.17.2",
+    "motion": "^12.28.1",
     "next": "16.1.3",
+    "next-themes": "^0.4.6",
+    "postprocessing": "^6.38.2",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^2.15.4",
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.167.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -18,6 +40,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
+    "tw-animate-css": "^1.4.0",
     "typescript": "^5"
   }
 }
