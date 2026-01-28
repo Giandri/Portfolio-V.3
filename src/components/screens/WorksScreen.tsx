@@ -42,7 +42,7 @@ export function WorksScreen() {
         transition={{ delay: 1.5, duration: 1, ease: "easeIn" }}
         className="fixed left-10 top-1/2 -translate-y-1/2 z-500 w-[420px] h-[200px]"
       >
-        <Skiper67 videoSrc="/videos/loggs maps.mp4" />
+        <Skiper67 videoSrc="https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20maps.mp4" />
       </motion.div>
 
       <motion.div
@@ -51,7 +51,7 @@ export function WorksScreen() {
         transition={{ delay: 1.5, duration: 1, ease: "easeIn" }}
         className="fixed right-10 top-1/2 -translate-y-1/2 z-500 w-[420px] h-[200px]"
       >
-        <Skiper67 videoSrc="/videos/loggs video.mp4" />
+        <Skiper67 videoSrc="https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20video.mp4" />
       </motion.div>
 
 
