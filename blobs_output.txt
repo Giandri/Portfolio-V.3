@@ -1,2 +1,0 @@
-loggs maps.mp4: https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20maps.mp4
-loggs video.mp4: https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20video.mp4

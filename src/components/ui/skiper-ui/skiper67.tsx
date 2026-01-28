@@ -173,14 +173,19 @@ export const Skiper67 = ({ videoSrc }: { videoSrc: string }) => {
           <Play className="size-4 fill-white " /> Play
         </motion.div>
         <video
+          ref={(el) => {
+            if (el) {
+              el.muted = true;
+              el.play().catch(() => { });
+            }
+          }}
           autoPlay
           muted
           playsInline
           loop
+          src={videoSrc}
           className="h-full w-full object-cover"
-        >
-          <source src={videoSrc} />
-        </video>
+        />
       </div>
     </motion.div>
   );
