@@ -314,8 +314,8 @@ export default function Home() {
             >
               <SlideToUnlock onUnlock={handleUnlock} className="w-[280px] max-w-[90vw] sm:max-w-[280px]">
                 <SlideToUnlockTrack>
-                  <SlideToUnlockText className="text-zinc-500 dark:text-zinc-400">
-                    <ShimmeringText text="slide to unlock" />
+                  <SlideToUnlockText className="text-zinc-500 dark:text-zinc-400 font-mono">
+                    <ShimmeringText text="Slide To Unlock" />
                   </SlideToUnlockText>
                   <SlideToUnlockHandle />
                 </SlideToUnlockTrack>
