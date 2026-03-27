@@ -237,7 +237,7 @@ const VideoPopOver = ({
           stiffness: 100,
           damping: 20,
         }}
-        className="relative w-[80vw] h-[80vh]"
+        className="relative w-[95vw] aspect-video md:aspect-auto md:w-[80vw] md:h-[80vh]"
       >
         <VideoPlayer style={{ width: "100%", height: "100%" }}>
           <VideoPlayerContent

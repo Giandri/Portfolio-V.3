@@ -10,11 +10,19 @@ import { AnimatedChart } from "../animated-chart";
 import { ProgressiveBlur } from "../ui/progressive-blur";
 import { ShareButton } from "../animate-ui/components/community/share-button";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 export function InfoScreen() {
   const [isHover, setIsHover] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("hello@yourname.com");
@@ -28,7 +36,7 @@ export function InfoScreen() {
   ];
 
   return (
-    <div className="w-full h-full p-4 sm:p-6 md:p-8 lg:p-12 overflow-y-auto flex flex-col">
+    <div className="w-full h-full p-4 pt-20 sm:p-6 md:p-8 lg:p-12 overflow-y-auto flex flex-col">
       <div className="max-w-[1600px] mx-auto w-full h-full flex flex-col lg:grid lg:grid-cols-2 lg:divide-x divide-neutral-800/20 dark:divide-neutral-800 border-neutral-800">
 
         {/* Left Column */}
@@ -42,7 +50,7 @@ export function InfoScreen() {
           >
             <MorphingText
               texts={["Info", "About Me",]}
-              className="text-start"
+              className="text-center sm:text-start"
             />
           </motion.h1>
 
@@ -91,7 +99,7 @@ export function InfoScreen() {
                 <ProgressiveBlur
                   className="pointer-events-none absolute bottom-0 left-0 h-[60%] w-full"
                   blurIntensity={0.4}
-                  animate={isHover ? 'visible' : 'hidden'}
+                  animate={isMobile || isHover ? 'visible' : 'hidden'}
                   variants={{
                     hidden: { opacity: 0 },
                     visible: { opacity: 1 },
@@ -102,7 +110,7 @@ export function InfoScreen() {
                 {/* Hover Content */}
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 font-mono"
-                  animate={isHover ? 'visible' : 'hidden'}
+                  animate={isMobile || isHover ? 'visible' : 'hidden'}
                   variants={{
                     hidden: { opacity: 0 },
                     visible: { opacity: 1 },
@@ -148,7 +156,7 @@ export function InfoScreen() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.5 }}
             className="w-full font-mono text-white dark:text-black text-center"
           >

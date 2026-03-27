@@ -320,7 +320,7 @@ export function MorphSurface({
           e.stopPropagation()
         }}
         className={cn(
-          "relative flex flex-col items-center top-8 z-10 overflow-hidden",
+          "relative flex flex-col items-center top-6 z-10 overflow-hidden",
           "bg-card dark:bg-muted",
           "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]",
           "dark:shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)]",
@@ -523,7 +523,7 @@ const MorphSurfaceFeedback = React.forwardRef<
   const defaultContent = (
     <>
       <div className="flex justify-between py-1">
-        <p className="flex gap-[6px] text-sm items-center text-muted-foreground select-none z-[2] ml-[25px]">
+        <p className="flex gap-[2px] text-sm items-center text-muted-foreground select-none z-[2] ml-[25px]">
           Feedback
         </p>
         <button

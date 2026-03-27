@@ -183,7 +183,7 @@ function AnimatedChart({
   ...props
 }: AnimatedChartProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const isInView = useInView(ref, { once: false, amount: 0.1 })
 
   // Generate a data signature to detect changes
   const dataSignature = useMemo(() => {

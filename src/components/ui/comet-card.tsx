@@ -78,6 +78,37 @@ export const CometCard = ({
     y.set(0);
   };
 
+  React.useEffect(() => {
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      let { gamma, beta } = event;
+      if (gamma === null || beta === null) return;
+
+      const maxTilt = 45;
+      
+      // Assume normal holding position is 45 degrees
+      let b = beta - 45;
+      b = Math.max(-maxTilt, Math.min(maxTilt, b));
+      let g = gamma;
+      g = Math.max(-maxTilt, Math.min(maxTilt, g));
+
+      const xPct = g / (maxTilt * 2);
+      const yPct = b / (maxTilt * 2);
+
+      x.set(xPct);
+      y.set(yPct);
+    };
+
+    if (typeof window !== "undefined" && window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", handleOrientation);
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && window.DeviceOrientationEvent) {
+        window.removeEventListener("deviceorientation", handleOrientation);
+      }
+    };
+  }, [x, y]);
+
   return (
     <div className={cn("perspective-distant transform-3d", className)}>
       <motion.div

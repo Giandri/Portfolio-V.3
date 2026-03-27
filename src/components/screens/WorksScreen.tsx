@@ -19,10 +19,10 @@ export function WorksScreen() {
 
 
   return (
-    <div className="w-full min-h-screen bg-background text-foreground transition-colors z-400 duration-300 overflow-hidden">
+    <div className="w-full min-h-screen  bg-background text-foreground transition-colors z-400 duration-300 overflow-hidden">
       <Spline
         scene="https://prod.spline.design/1PUC3yoNBjKkfudo/scene.splinecode"
-        className="w-full h-full overflow-hidden"
+        className="w-full h-full overflow-hidden hidden lg:block"
       />
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
@@ -32,7 +32,7 @@ export function WorksScreen() {
       >
         <MorphingText
           texts={["Works.", "Projects.",]}
-          className=""
+          className="text-7xl sm:text-6xl lg:text-8xl"
         />
       </motion.h1>
 
@@ -40,7 +40,7 @@ export function WorksScreen() {
         initial={{ opacity: 0, y: 100, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ delay: 1.5, duration: 1, ease: "easeIn" }}
-        className="fixed left-10 top-1/2 -translate-y-1/2 z-500 w-[420px] h-[200px]"
+        className="fixed left-5 sm:left-10 top-1/2 -translate-y-1/2 z-500 w-[160px] h-[90px] md:w-[200px] md:h-[200px] lg:w-[420px] lg:h-[200px]"
       >
         <Skiper67 videoSrc="https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20maps.mp4" />
       </motion.div>
@@ -49,7 +49,7 @@ export function WorksScreen() {
         initial={{ opacity: 0, y: 100, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ delay: 1.5, duration: 1, ease: "easeIn" }}
-        className="fixed right-10 top-1/2 -translate-y-1/2 z-500 w-[420px] h-[200px]"
+        className="fixed right-5 md:right-10 top-1/2 -translate-y-1/2 z-500 w-[160px] h-[90px] md:w-[200px] md:h-[200px] lg:w-[420px] lg:h-[200px]"
       >
         <Skiper67 videoSrc="https://ywrmvlrvlbxuplck.public.blob.vercel-storage.com/loggs%20video.mp4" />
       </motion.div>

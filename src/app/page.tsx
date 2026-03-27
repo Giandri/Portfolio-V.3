@@ -346,7 +346,7 @@ export default function Home() {
 
 
       <Cursor
-        className="z-[1000]"
+        className="z-[1000] hidden sm:block"
         variants={{
           initial: { scale: 0.3, opacity: 0 },
           animate: { scale: 1, opacity: 1 },
@@ -382,8 +382,8 @@ export default function Home() {
             )}
           </AnimatePresence>
         </motion.div>
-      </Cursor>
-      <Fps position="top-right" label="FPS" className="z-[500] text-black dark:text-white transition-colors duration-300" />
+      </Cursor >
+      <Fps position="top-right" label="FPS" className="z-[500] text-black dark:text-white hidden sm:block transition-colors duration-300" />
       {/* Morph Surface Feedback */}
       <div className="fixed top-[-10px] left-1/2 transform -translate-x-1/2 z-[400]">
         <MorphSurface
@@ -421,7 +421,7 @@ export default function Home() {
         />
       </div>
       {/* Theme Toggle - Top Left */}
-      <div className="fixed top-4 left-4 z-[1000]">
+      <div className="fixed bottom-3 left-5 sm:top-4 sm:left-4 z-[1000]">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
@@ -446,12 +446,12 @@ export default function Home() {
         mouseX={mouseX}
         mouseY={mouseY}
         time={time}
-        className="fixed bottom-4 left-4 sm:bottom-20 sm:left-20 z-[400]"
+        className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]"
       />
-      <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[200px] sm:top-[350px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-base" />
+      <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[270px] sm:top-[260px] left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
       <MorphingText
         texts={["Web Developer", "Visual Creative", "Coffee Addict"]}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[10] text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
       />
 
 
