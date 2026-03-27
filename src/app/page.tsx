@@ -448,7 +448,7 @@ export default function Home() {
         time={time}
         className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]"
       />
-      <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[270px] sm:top-[260px] left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
+      <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[280px] sm:top-[260px] left-1/2 transform -translate-x-1/2 -translate-y-1/3 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
       <MorphingText
         texts={["Web Developer", "Visual Creative", "Coffee Addict"]}
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
