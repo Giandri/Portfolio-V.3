@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { Skiper67 } from '../ui/skiper-ui/skiper67';
 import { motion } from "framer-motion";
@@ -16,14 +17,23 @@ const Spline = dynamic(() => import('@splinetool/react-spline'), {
 });
 
 export function WorksScreen() {
+  const [isDesktop, setIsDesktop] = useState(false);
 
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   return (
     <div className="w-full min-h-screen  bg-background text-foreground transition-colors z-400 duration-300 overflow-hidden">
-      <Spline
-        scene="https://prod.spline.design/1PUC3yoNBjKkfudo/scene.splinecode"
-        className="w-full h-full overflow-hidden hidden lg:block"
-      />
+      {isDesktop && (
+        <Spline
+          scene="https://prod.spline.design/1PUC3yoNBjKkfudo/scene.splinecode"
+          className="w-full h-full overflow-hidden"
+        />
+      )}
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
