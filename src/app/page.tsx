@@ -15,12 +15,6 @@ import { IdCardIcon } from "@/components/ui/id-card";
 import { Fps } from "@/components/ui/fps";
 import { Cursor } from "@/components/ui/cursor";
 import { AppleHelloEnglishEffect } from "@/components/apple-hello-effect";
-import {
-  SlideToUnlock,
-  SlideToUnlockTrack,
-  SlideToUnlockText,
-  SlideToUnlockHandle,
-} from "@/components/slide-to-unlock";
 import { ShimmeringText } from "@/components/shimmering-text";
 import { DebugPanel } from "@/components/ui/skiper-ui/skiper102";
 import { ThemeToggleButton } from "@/components/ui/skiper-ui/skiper26";
@@ -208,8 +202,7 @@ function DockWithExpandable({
 
 export default function Home() {
   const [isPointer, setIsPointer] = useState(false);
-  const [showSlideToUnlock, setShowSlideToUnlock] = useState(true);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   // DebugPanel states
   const mouseX = useMotionValue(0);
@@ -256,11 +249,6 @@ export default function Home() {
     }
   }, []);
 
-  const handleUnlock = useCallback(() => {
-    setShowSlideToUnlock(false);
-    setShowIntro(true);
-  }, []);
-
   const handleIntroComplete = useCallback(() => {
     // Wait a moment then fade out intro
     setTimeout(() => {
@@ -290,41 +278,6 @@ export default function Home() {
       className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8 z-1000 transition-colors duration-500"
       onMouseMove={handleMouseMove}
     >
-      {/* Slide to Unlock Screen */}
-      <AnimatePresence>
-        {showSlideToUnlock && (
-          <motion.div
-            className="fixed inset-0 z-[600] bg-white dark:bg-black flex flex-col items-center justify-center gap-8 transition-colors duration-300"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-          >
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-black/50 dark:text-white/50 text-lg"
-            >
-
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <SlideToUnlock onUnlock={handleUnlock} className="w-[280px] max-w-[90vw] sm:max-w-[280px]">
-                <SlideToUnlockTrack>
-                  <SlideToUnlockText className="text-zinc-500 dark:text-zinc-400 font-mono">
-                    <ShimmeringText text="Slide To Unlock" />
-                  </SlideToUnlockText>
-                  <SlideToUnlockHandle />
-                </SlideToUnlockTrack>
-              </SlideToUnlock>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Apple Hello Intro */}
       <AnimatePresence>
         {showIntro && (
@@ -448,12 +401,17 @@ export default function Home() {
         time={time}
         className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]"
       />
-      <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[280px] sm:top-[260px] left-1/2 transform -translate-x-1/2 -translate-y-1/3 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
-      <MorphingText
-        texts={["Web Developer", "Visual Creative", "Coffee Addict"]}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
-      />
-
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
+        <MorphingText
+          texts={["Web Developer", "Visual Creative", "Coffee Addict"]}
+          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
+        />
+      </motion.div>
 
     </div>
   );
