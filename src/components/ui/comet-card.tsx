@@ -25,8 +25,9 @@ export const CometCard = ({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
+  const springConfig = { damping: 30, stiffness: 40, mass: 1 };
+  const mouseXSpring = useSpring(x, springConfig);
+  const mouseYSpring = useSpring(y, springConfig);
 
   const rotateX = useTransform(
     mouseYSpring,
@@ -84,15 +85,16 @@ export const CometCard = ({
       if (gamma === null || beta === null) return;
 
       const maxTilt = 45;
+      const tiltSensitivity = 3; // Menurunkan sensitivitas hingga 30% dari awal
       
-      // Assume normal holding position is 45 degrees
+     
       let b = beta - 45;
       b = Math.max(-maxTilt, Math.min(maxTilt, b));
       let g = gamma;
       g = Math.max(-maxTilt, Math.min(maxTilt, g));
 
-      const xPct = g / (maxTilt * 2);
-      const yPct = b / (maxTilt * 2);
+      const xPct = g / (maxTilt * 2 * tiltSensitivity);
+      const yPct = b / (maxTilt * 2 * tiltSensitivity);
 
       x.set(xPct);
       y.set(yPct);
