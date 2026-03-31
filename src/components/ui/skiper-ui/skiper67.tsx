@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useSpring } from "framer-motion";
-import { Play, Plus } from "lucide-react";
+import { Play, Plus, ArrowUpRight } from "lucide-react";
 import {
   MediaControlBar,
   MediaController,
@@ -122,7 +122,19 @@ export const VideoPlayerContent = ({
   <video className={cn("mb-0 mt-0", className)} {...props} />
 );
 
-export const Skiper67 = ({ videoSrc }: { videoSrc: string }) => {
+export const Skiper67 = ({
+  videoSrc,
+  title,
+  techStack,
+  description,
+  link
+}: {
+  videoSrc: string;
+  title?: string;
+  techStack?: string[];
+  description?: string;
+  link?: string;
+}) => {
   const [showVideoPopOver, setShowVideoPopOver] = useState(false);
 
   const SPRING = {
@@ -154,6 +166,10 @@ export const Skiper67 = ({ videoSrc }: { videoSrc: string }) => {
         {showVideoPopOver && (
           <VideoPopOver
             videoSrc={videoSrc}
+            title={title}
+            techStack={techStack}
+            description={description}
+            link={link}
             setShowVideoPopOver={setShowVideoPopOver}
           />
         )}
@@ -194,9 +210,17 @@ export const Skiper67 = ({ videoSrc }: { videoSrc: string }) => {
 const VideoPopOver = ({
   setShowVideoPopOver,
   videoSrc,
+  title,
+  techStack,
+  description,
+  link,
 }: {
   setShowVideoPopOver: (showVideoPopOver: boolean) => void;
   videoSrc: string;
+  title?: string;
+  techStack?: string[];
+  description?: string;
+  link?: string;
 }) => {
   const [mounted, setMounted] = useState(false);
 
@@ -208,7 +232,7 @@ const VideoPopOver = ({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed left-0 top-0 z-900 flex h-screen w-screen items-center justify-center">
+    <div className="fixed left-0 top-0 z-[900] flex h-screen w-screen items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -217,6 +241,7 @@ const VideoPopOver = ({
         className="bg-background/90 absolute left-0 top-0 h-full w-full backdrop-blur-lg"
         onClick={() => setShowVideoPopOver(false)}
       ></motion.div>
+
       <motion.div
         initial={{ clipPath: "inset(43.5% 43.5% 33.5% 43.5% )", opacity: 0 }}
         animate={{ clipPath: "inset(0 0 0 0)", opacity: 1 }}
@@ -237,29 +262,119 @@ const VideoPopOver = ({
           stiffness: 100,
           damping: 20,
         }}
-        className="relative w-[95vw] aspect-video md:aspect-auto md:w-[80vw] md:h-[80vh]"
+        className="relative flex flex-col items-center justify-center w-full max-w-6xl md:h-auto max-h-[90vh]"
       >
-        <VideoPlayer style={{ width: "100%", height: "100%" }}>
-          <VideoPlayerContent
-            src={videoSrc}
-            autoPlay
-            slot="media"
-            className="w-full h-full object-contain"
-            style={{ width: "100%", height: "100%" }}
-          />
+        <div className="relative w-full aspect-video md:h-[70vh] rounded-xl overflow-hidden shadow-2xl bg-black/50">
+          <VideoPlayer style={{ width: "100%", height: "100%" }}>
+            <VideoPlayerContent
+              src={videoSrc}
+              autoPlay
+              slot="media"
+              className="w-full h-full object-contain"
+              style={{ width: "100%", height: "100%" }}
+            />
 
-          <span
-            onClick={() => setShowVideoPopOver(false)}
-            className="absolute right-2 top-2 z-10 cursor-pointer rounded-full p-1 transition-colors"
-          >
-            <Plus className="size-5 rotate-45 text-black dark:text-white" />
-          </span>
-          <VideoPlayerControlBar className="absolute bottom-0 left-1/2 flex w-full max-w-7xl -translate-x-1/2 items-center justify-center px-5 mix-blend-exclusion md:px-10 md:py-5">
-            <VideoPlayerPlayButton className="h-4 bg-transparent" />
-            <VideoPlayerTimeRange className="bg-transparent" />
-            <VideoPlayerMuteButton className="size-4 bg-transparent" />
-          </VideoPlayerControlBar>
-        </VideoPlayer>
+            <VideoPlayerControlBar className="absolute bottom-0 left-1/2 flex w-full max-w-7xl -translate-x-1/2 items-center justify-center px-5 mix-blend-exclusion md:px-10 md:py-5">
+              <VideoPlayerPlayButton className="h-4 bg-transparent" />
+              <VideoPlayerTimeRange className="bg-transparent" />
+              <VideoPlayerMuteButton className="size-4 bg-transparent" />
+            </VideoPlayerControlBar>
+          </VideoPlayer>
+        </div>
+
+        <AnimatePresence>
+          {(title || description || techStack) && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mt-2 sm:mt-6 flex flex-col sm:flex-row items-start justify-between w-full px-2 gap-4"
+            >
+              <div className="flex flex-col gap-3 flex-1 text-center sm:text-left">
+                {title && (
+                  <h3 className="text-foreground font-bold text-2xl md:text-3xl tracking-tight" style={{ fontFamily: "'Almendra', serif" }}>
+                    {title}
+                  </h3>
+                )}
+
+                {techStack && techStack.length > 0 && (
+                  <div className="flex justify-center sm:justify-start flex-wrap gap-3">
+                    {techStack.map((tech, idx) => {
+                      const normalized = tech.toLowerCase().replace(/[^a-z0-9]/g, '');
+                      // Map common tech stack names to simpleicons slugs
+                      const map: Record<string, string> = {
+                        reactjs: 'react',
+                        react: 'react',
+                        nodejs: 'nodedotjs',
+                        postgresql: 'postgresql',
+                        nextjs: 'nextdotjs',
+                        tailwindcss: 'tailwindcss',
+                        framermotion: 'framer',
+                        typescript: 'typescript',
+                        javascript: 'javascript',
+                        html5: 'html5',
+                        css3: 'css3',
+                        git: 'git',
+                        github: 'github',
+                        mongodb: 'mongodb',
+                        express: 'express',
+                        expressjs: 'express',
+                        prisma: 'prisma',
+                        mysql: 'mysql',
+                        vuejs: 'vuedotjs',
+                        vue: 'vuedotjs',
+                        angular: 'angular',
+                        docker: 'docker',
+                        aws: 'amazonaws',
+                        firebase: 'firebase',
+                      };
+                      const iconSlug = map[normalized] || normalized;
+
+                      return (
+                        <div
+                          key={idx}
+                          title={tech}
+                          className="flex items-center justify-center p-2 bg-foreground/10 hover:bg-foreground/20 transition-colors rounded-full border border-foreground/20"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://cdn.simpleicons.org/${iconSlug}/black`}
+                            alt={tech}
+                            className="w-5 h-5 md:w-6 md:h-6 object-contain dark:hidden"
+                          />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://cdn.simpleicons.org/${iconSlug}/white`}
+                            alt={tech}
+                            className="w-5 h-5 md:w-6 md:h-6 object-contain hidden dark:block"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {description && (
+                  <p className="text-foreground/80 font-mono text-[12px] text-justify md:text-sm leading-relaxed max-w-3xl mt-1">
+                    {description}
+                  </p>
+                )}
+              </div>
+
+              {link && (
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" py-2 px-4 sm:px-6 bg-foreground text-center font-mono text-background text-[10px] md:text-base font-semibold rounded-full hover:opacity-80 transition-opacity shrink-0 shadow-lg mt-2 sm:mt-0"
+                >
+                  Visit
+                </a>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>,
     document.body
