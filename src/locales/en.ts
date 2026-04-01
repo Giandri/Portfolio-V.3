@@ -4,7 +4,7 @@ export const en = {
   works: "Works",
   info: "Info",
   hiImA: "[ hi,i'm a ]",
-  roles: ["Web Developer", "Visual Creative", "Coffee Addict"],
+  roles: ["Web Developer", "Graphic Designer", "Coffeeholic"],
   contactPlaceholder: "Let's work together! Share your project ideas...",
 
   // HomeScreen

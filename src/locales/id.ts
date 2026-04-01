@@ -4,7 +4,7 @@ export const id = {
   works: "Karya",
   info: "Bio",
   hiImA: "[ hai, saya seorang ]",
-  roles: ["Web Developer", "Visual Creative", "Coffeeholic"],
+  roles: ["Web Developer", "Desain Grafis", "Penggemar Kopi"],
   contactPlaceholder: "Mari bekerja sama! Bagikan ide proyek Anda...",
 
   // HomeScreen
@@ -20,10 +20,10 @@ export const id = {
   worksTitle: ["Karya.", "Proyek."],
   projects: {
     loggsMaps: "Fullstack Web — Loggs Maps adalah aplikasi pemetaan interaktif yang menghubungkan pecinta kopi dengan kafe terbaik di sekitar. Filter berdasarkan lokasi, telusuri ulasan, dan jelajahi — semuanya dalam satu tempat.",
-    loggsVisual: "Frontend Website — situs web profil perusahaan ini dibangun untuk membuat Loggs Visual tak terlupakan. Animasi halus, tata letak modern, dan penceritaan yang disengaja menghidupkan merek sejak guliran pertama.",
-    bwsPortal: "Fullstack Web — portal resmi BWS ini memudahkan akses informasi dan pengajuan layanan publik dengan cara yang cepat, transparan, dan mudah diakses.",
-    absenBws: "Fullstack Web — aAbsence adalah sistem kehadiran berbasis web yang menyederhanakan check-in, menghasilkan laporan real-time, dan menjaga jadwal karyawan tetap terorganisir dalam satu dasbor yang bersih.",
-    ptBsm: "Frontend Website — situs profil perusahaan ini memadukan desain elegan dengan performa halus. Animasi bersih dan konten terstruktur dengan baik membangun kepercayaan klien sejak kunjungan pertama."
+    loggsVisual: "Frontend Website — Web profil  Loggs Visual. Animasi halus, tata letak modern, dan penceritaan yang disengaja menghidupkan merek sejak guliran pertama.",
+    bwsPortal: "Fullstack Web — Portal resmi BWS ini memudahkan akses informasi dan pengajuan layanan publik dengan cara yang cepat, transparan, dan mudah diakses.",
+    absenBws: "Fullstack Web — Aplikasi Absensi adalah sistem kehadiran berbasis web yang menyederhanakan check-in, menghasilkan laporan real-time, dan menjaga jadwal karyawan tetap terorganisir dalam satu dasbor yang bersih.",
+    ptBsm: "Frontend Website — Web profil perusahaan ini memadukan desain elegan dengan performa halus. Animasi bersih dan konten terstruktur dengan baik membangun kepercayaan klien sejak kunjungan pertama."
   },
 
   // InfoScreen

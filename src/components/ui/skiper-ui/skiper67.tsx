@@ -280,7 +280,7 @@ const VideoPopOver = ({
         }}
         className="relative flex flex-col items-center justify-center w-full max-w-6xl md:h-auto max-h-[90vh]"
       >
-        <div className="relative w-full aspect-video md:h-[70vh] rounded-xl overflow-hidden shadow-2xl bg-black/50">
+        <div className="relative w-full aspect-video md:h-[70vh] rounded-xl overflow-hidden shadow-2xl">
           <VideoPlayer style={{ width: "100%", height: "100%" }}>
             <VideoPlayerContent
               src={videoSrc}
