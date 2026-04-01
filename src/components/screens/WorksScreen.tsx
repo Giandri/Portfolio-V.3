@@ -20,34 +20,34 @@ const Spline = dynamic(() => import('@splinetool/react-spline'), {
 
 const projectsBase = [
   {
-    videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/loggs-map.mp4",
+    videoSrc: "https://assets.giandri.my.id/loggs-map.mp4",
     title: "Loggs Maps",
     techStack: ["React", "Next.js", "TailwindCSS", "Node.js", "PostgreSQL", "Prisma", "Leaflet"],
     id: "loggsMaps",
     link: "https://maps.loggsvisual.com"
   },
   {
-    videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/loggs.mp4",
+    videoSrc: "https://assets.giandri.my.id/loggs.mp4",
     title: "Loggs Visual Profile",
     techStack: ["Next.js", "TailwindCSS", "Framer Motion", "Shadcn UI"],
     id: "loggsVisual",
     link: "https://www.loggsvisual.com"
   },
   {
-    videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/portal-bwsbabel.mp4",
+    videoSrc: "https://assets.giandri.my.id/portal-bwsbabel.mp4",
     title: "Service Public Portal BWS Babel",
     techStack: ["Next.js", "TailwindCSS", "Node.js", "Axios", "Typescript", "PostgreSQL", "Prisma"],
     id: "bwsPortal",
     link: "https://portal-pelayanan-publik.vercel.app"
   },
   {
-    videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/absen-bws.mp4",
+    videoSrc: "https://assets.giandri.my.id/absen-bws.mp4",
     title: " Attendance Management BWS Babel",
     techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI", "Leaflet"],
     id: "absenBws"
   },
   {
-    videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/ptbsm1.mp4",
+    videoSrc: "https://assets.giandri.my.id/ptbsm1.mp4",
     title: "PT.BSM",
     techStack: ["Next.js", "TailwindCSS", "Typescript", "Shadcn UI", "Framer Motion"],
     id: "ptBsm",
