@@ -166,11 +166,9 @@ export const Skiper67 = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.5, ease: "easeIn" }}
-      className="relative flex h-full w-full items-center justify-center bg-neutral-200 dark:bg-neutral-800"
+      className="relative flex h-full w-full items-center justify-center bg-transparent"
     >
-      <div className="absolute top-1/4 grid content-start justify-items-center gap-6 text-center">
 
-      </div>
       <AnimatePresence>
         {showVideoPopOver && (
           <VideoPopOver
@@ -199,7 +197,7 @@ export const Skiper67 = ({
             <Play className="size-4 fill-white " /> Play
           </motion.div>
         )}
-        
+
         {isInView ? (
           <video
             ref={(el) => {
@@ -216,7 +214,7 @@ export const Skiper67 = ({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full animate-pulse bg-neutral-300 dark:bg-neutral-800" />
+          <div />
         )}
       </div>
     </motion.div>
@@ -254,7 +252,7 @@ const VideoPopOver = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="bg-background/90 absolute left-0 top-0 h-full w-full backdrop-blur-lg"
+        className="absolute left-0 top-0 h-full w-full backdrop-blur-lg"
         onClick={() => setShowVideoPopOver(false)}
       ></motion.div>
 
@@ -383,7 +381,7 @@ const VideoPopOver = ({
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className=" py-2 px-4 sm:px-6 bg-foreground text-center font-mono text-background text-[10px] md:text-base font-semibold rounded-full hover:opacity-80 transition-opacity shrink-0 shadow-lg mt-2 sm:mt-0"
+                  className=" py-2 px-4 sm:px-6 bg-foreground text-center font-mono text-background text-[10px] md:text-base font-semibold rounded-xl hover:opacity-80 transition-opacity shrink-0 shadow-lg mt-2 sm:mt-0"
                 >
                   Visit
                 </a>

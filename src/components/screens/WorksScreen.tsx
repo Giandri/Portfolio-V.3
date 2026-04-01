@@ -36,7 +36,7 @@ const projectsBase = [
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/portal-bwsbabel.mp4",
     title: "Service Public Portal BWS Babel",
-    techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Prisma"],
+    techStack: ["Next.js", "TailwindCSS", "Node.js", "Axios", "Typescript", "PostgreSQL", "Prisma"],
     id: "bwsPortal",
     link: "https://portal-pelayanan-publik.vercel.app"
   },
