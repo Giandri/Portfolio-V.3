@@ -51,7 +51,7 @@ const projectsBase = [
     title: "PT.BSM",
     techStack: ["Next.js", "TailwindCSS", "Typescript", "Shadcn UI", "Framer Motion"],
     id: "ptBsm",
-    link: "https://ptbsm.vercel.app"
+    link: "https://bsmbabel.vercel.app"
   }
 ];
 

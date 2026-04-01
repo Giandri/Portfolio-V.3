@@ -351,13 +351,13 @@ const VideoPopOver = ({
                           title={tech}
                           className="flex items-center justify-center p-2 bg-foreground/10 hover:bg-foreground/20 transition-colors rounded-full border border-foreground/20"
                         >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          {/* next/next/no-img-element */}
                           <img
                             src={`https://cdn.simpleicons.org/${iconSlug}/black`}
                             alt={tech}
                             className="w-5 h-5 md:w-6 md:h-6 object-contain dark:hidden"
                           />
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          {/*img-element */}
                           <img
                             src={`https://cdn.simpleicons.org/${iconSlug}/white`}
                             alt={tech}
