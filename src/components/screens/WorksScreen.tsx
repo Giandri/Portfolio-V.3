@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 import { MorphingText } from '../ui/morphing-text';
 import { Marquee } from '../ui/marquee';
 import { ProgressiveBlur } from '../ui/progressive-blur';
+import { useLanguage } from '@/context/language-provider';
 
-// Dynamic import Spline to avoid async component error in client component
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   ssr: false,
   loading: () => (
@@ -18,50 +18,55 @@ const Spline = dynamic(() => import('@splinetool/react-spline'), {
   ),
 });
 
-const projects = [
+const projectsBase = [
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/loggs-map.mp4",
     title: "Loggs Maps",
     techStack: ["React", "Next.js", "Node.js", "PostgreSQL", "Prisma"],
-    description: "Fullstack Web — Loggs Maps is an interactive mapping app that connects coffee lovers with the best cafés nearby. Filter by location, browse reviews, and explore — all in one place.",
+    id: "loggsMaps",
     link: "https://maps.loggsvisual.com"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/loggs.mp4",
     title: "Loggs Visual Profile",
     techStack: ["Next.js", "TailwindCSS", "Framer Motion", "Shadcn UI"],
-    description: "Frontend Website —  this company profile website was built to make Loggs Visual unforgettable. Smooth animations, a modern layout, and intentional storytelling bring the brand to life from the first scroll.",
+    id: "loggsVisual",
     link: "https://www.loggsvisual.com"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/portal-bwsbabel.mp4",
     title: "Service Public Portal BWS Babel",
     techStack: ["Next.js", "Typescript", "PostgreSQL", "Prisma"],
-    description: "A Fullstack Web — this official BWS portal makes it easy to access information and submit public service requests in a fast, transparent, and accessible way.",
+    id: "bwsPortal",
     link: "https://portal-pelayanan-publik.vercel.app"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/absen-bws.mp4",
     title: " Attendance Management BWS Babel",
     techStack: ["Next.js", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI"],
-    description: "A Fullstack Web — aAbsence is a web-based attendance system that simplifies check-ins, generates real-time reports, and keeps employee schedules organized in one clean dashboard."
+    id: "absenBws"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/ptbsm1.mp4",
     title: "PT.BSM",
     techStack: ["Next.js", "Typescript", "Shadcn UI", "Framer Motion"],
-    description: "A Frontend Website —  this company profile site blends elegant design with smooth performance. Clean animations and well-structured content build client trust from the very first visit.",
+    id: "ptBsm",
     link: "https://ptbsm.vercel.app"
   }
 ];
 
 export function WorksScreen() {
+  const { t } = useLanguage();
   const [isDesktop, setIsDesktop] = useState(false);
+
+  const projects = projectsBase.map(p => ({
+    ...p,
+    description: t.projects[p.id as keyof typeof t.projects]
+  }));
 
   useEffect(() => {
     const checkDesktop = () => {
       const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
-      // Exclude devices with touch capability (mobile/tablets) to prevent heavy 3D loading
       const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       setIsDesktop(isLargeScreen && !isTouchDevice);
     };
@@ -91,17 +96,17 @@ export function WorksScreen() {
         className="text-[12vw] lg:text-[10rem] leading-[0.8] font-bold text-black dark:text-white tracking-tighter fixed top-32 md:top-20  inset-x-0 z-[500] flex pointer-events-none"
       >
         <MorphingText
-          texts={["Works.", "Projects.",]}
+          texts={t.worksTitle}
           className="text-7xl sm:text-6xl lg:text-8xl"
         />
       </motion.h1>
 
-      {/* Projects Container: Mobile = flex-col, Desktop = Marquee */}
+      {/* Projects Container*/}
       <div className="relative z-[500] w-full pt-[30vh] md:pt-0 min-h-screen flex items-center justify-center pointer-events-none pb-40 md:pb-0 px-5 md:px-0">
 
         {/* MOBILE: 1 Column */}
         {!isDesktop && (
-          <div className="flex flex-col items-center gap-10 w-full">
+          <div className="flex flex-col items-center gap-8 w-full">
             {projects.map((p, i) => (
               <motion.div
                 key={i}

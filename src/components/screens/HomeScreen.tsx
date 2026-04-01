@@ -2,22 +2,16 @@
 import { motion } from "motion/react";
 import { Marquee } from "@/components/ui/marquee";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
-
 import { HyperText } from "@/components/ui/hyper-text";
+import { useLanguage } from "@/context/language-provider";
 
 
 export function HomeScreen() {
+  const { t } = useLanguage();
 
   const marqueeItems = [
-    "Welcome",
-    "to",
-    "G",
-    "portfolio",
-    "Welcome",
-    "to",
-    "G",
-    "portfolio",
-
+    ...t.marqueeWelcome,
+    ...t.marqueeWelcome,
   ];
 
   return (
@@ -61,21 +55,19 @@ export function HomeScreen() {
         style={{ fontFamily: "'Almendra', serif" }}
       >
         <p className="text-lg md:text-xl text-black dark:text-white">
-          dear visitor,
+          {t.dearVisitor}
         </p>
 
         <p className="text-sm md:text-lg text-black dark:text-white leading-relaxed">
-          this portfolio represents my journey as a web developer —
-          a place for <span className="underline decoration-neutral-400">creative experiments</span>;
-          where code meets design and caffeine fuels the magic.
+          {t.bioP1}<span className="underline decoration-neutral-400">{t.bioCreative}</span>{t.bioP2}
         </p>
 
         <div className=" sm:pt-3 space-y-1">
           <p className="text-sm md:text-lg text-black dark:text-white">
-            warmly,
+            {t.warmly}
           </p>
           <p className="text-sm md:text-lg text-black dark:text-white">
-            G <span className="italic text-neutral-500 dark:text-neutral-400">(from pvnkalpinang)</span>
+            G <span className="italic text-neutral-500 dark:text-neutral-400">{t.fromLocation}</span>
           </p>
         </div>
       </motion.div>

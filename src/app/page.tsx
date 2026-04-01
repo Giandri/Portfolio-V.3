@@ -25,6 +25,8 @@ import { useMotionValue } from "motion/react";
 import { MorphingText } from "@/components/ui/morphing-text";
 import { MorphSurface } from "@/components/ui/morph-surface";
 import { ConversationBar } from "@/components/ui/conversation-bar";
+import { useLanguage } from "@/context/language-provider";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 
 
 function useIsMobile() {
@@ -201,6 +203,7 @@ function DockWithExpandable({
 }
 
 export default function Home() {
+  const { t } = useLanguage();
   const [isPointer, setIsPointer] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
 
@@ -250,13 +253,12 @@ export default function Home() {
   }, []);
 
   const handleIntroComplete = useCallback(() => {
-    // Wait a moment then fade out intro
     setTimeout(() => {
       setShowIntro(false);
     }, 500);
   }, []);
 
-  // DebugPanel handlers
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     mouseX.set(e.clientX);
     mouseY.set(e.clientY);
@@ -264,7 +266,7 @@ export default function Home() {
 
 
 
-  // Keyboard tracking for DebugPanel
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeyPressed(e.key);
@@ -278,7 +280,7 @@ export default function Home() {
       className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8 z-1000 transition-colors duration-500"
       onMouseMove={handleMouseMove}
     >
-      {/* Apple Hello Intro */}
+      {/*Intro */}
       <AnimatePresence>
         {showIntro && (
           <motion.div
@@ -337,11 +339,11 @@ export default function Home() {
         </motion.div>
       </Cursor >
       <Fps position="top-right" label="FPS" className="z-[500] text-black dark:text-white hidden sm:block transition-colors duration-300" />
-      {/* Morph Surface Feedback */}
+      {/* Morph Surface*/}
       <div className="fixed top-[-10px] left-1/2 transform -translate-x-1/2 z-[400]">
         <MorphSurface
           triggerLabel="[  ]"
-          placeholder="Let's work together! Share your project ideas..."
+          placeholder={t.contactPlaceholder}
           expandedWidth={320}
           expandedHeight={140}
           renderContent={(props) => (
@@ -353,13 +355,13 @@ export default function Home() {
                 onConnect={() => console.log('Connected to LangVoice')}
                 onDisconnect={() => {
                   console.log('Disconnected from LangVoice');
-                  // Removed props.onClose() - morph should only close on outside click
+
                 }}
                 onMessage={(message) => console.log('Message received:', message)}
                 onSendMessage={(message) => console.log('User sent:', message)}
                 onError={(error) => {
                   console.error('Conversation error:', error);
-                  // Fallback to default form if API fails
+
                   if (error.message?.includes('400')) {
                     console.warn('API key invalid. Using default form instead.');
                   }
@@ -369,16 +371,20 @@ export default function Home() {
           )}
           onSubmit={async (data) => {
             console.log('Contact form submitted:', data.get('message'));
-            // You can add your contact form submission logic here
           }}
         />
       </div>
-      {/* Theme Toggle - Top Left */}
+      {/* Theme Toggle - Top/Bottom Left */}
       <div className="fixed bottom-3 left-5 sm:top-4 sm:left-4 z-[1000]">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
-      {/* Expandable Screens - Accordion Behavior */}
+      {/* Language Toggle - Aligned with Dock on Right */}
+      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-[1000] flex items-center">
+        <LanguageToggle />
+      </div>
+
+      {/* Expandable Screens */}
       <AnimatePresence mode="wait">
         {expandedItem && (
           <FullPageContainer
@@ -394,7 +400,7 @@ export default function Home() {
         setExpandedItem={setExpandedItem}
       />
 
-      {/* Debug Panel - Bottom Left */}
+      {/* Debug Panel*/}
       <DebugPanel
         mouseX={mouseX}
         mouseY={mouseY}
@@ -406,9 +412,9 @@ export default function Home() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.8 }}
       >
-        <ShimmeringText text="[ hi,i'm a ]" className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
+        <ShimmeringText text={t.hiImA} className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
         <MorphingText
-          texts={["Web Developer", "Visual Creative", "Coffee Addict"]}
+          texts={t.roles}
           className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
         />
       </motion.div>

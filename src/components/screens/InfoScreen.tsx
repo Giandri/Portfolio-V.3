@@ -11,9 +11,11 @@ import { ProgressiveBlur } from "../ui/progressive-blur";
 import { ShareButton } from "../animate-ui/components/community/share-button";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/context/language-provider";
 
 
 export function InfoScreen() {
+  const { t } = useLanguage();
   const [isHover, setIsHover] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -30,9 +32,9 @@ export function InfoScreen() {
 
   // Skills data for the animated chart
   const skillsData = [
-    { title: "Web Development", value: 80, appendString: "%", animationDelay: 0.4 },
-    { title: "Visual Creative", value: 75, appendString: "%", animationDelay: 0.5 },
-    { title: "Coffee Enthusiast", value: 65, appendString: "%", animationDelay: 0.6 },
+    { title: t.skills.webDev, value: 80, appendString: "%", animationDelay: 0.4 },
+    { title: t.skills.visualCreative, value: 75, appendString: "%", animationDelay: 0.5 },
+    { title: t.skills.coffeeEnthusiast, value: 65, appendString: "%", animationDelay: 0.6 },
   ];
 
   return (
@@ -49,7 +51,7 @@ export function InfoScreen() {
             className="text-[12vw] lg:text-[10rem] leading-[0.8] font-bold text-black dark:text-white tracking-tighter"
           >
             <MorphingText
-              texts={["Info", "About Me",]}
+              texts={t.infoTitle}
               className="text-center sm:text-start"
             />
           </motion.h1>
@@ -63,15 +65,10 @@ export function InfoScreen() {
             style={{ fontFamily: "'Almendra', serif" }}
           >
             <p>
-              I'm <span className="text-black dark:text-white">Giandri Aditio</span>, A Web Developer and Graphic Designer
-              with internship experience and independent projects in web development.
-              Holds a Bachelor’s degree in Informatics Engineering from ISB Atma Luhur
-              Pangkal Pinang with a GPA of 3.84.
+              {t.aboutP1}
             </p>
             <p className="text-black dark:text-white">
-              Possesses strong skills in web animation, Tailwind CSS, Next.js, and Laravel.
-              Additionally, has a strong interest in graphic design and photography, particularly
-              in stage and band photography, which further enhances creative capabilities.
+              {t.aboutP2}
             </p>
 
           </motion.div>
@@ -120,7 +117,7 @@ export function InfoScreen() {
                   <div className="flex items-center justify-between px-4 py-3">
                     <div className="flex flex-col gap-0">
                       <p className="text-sm font-medium text-white">Giandri Aditio</p>
-                      <span className="text-xs text-zinc-300">Web Developer & Designer</span>
+                      <span className="text-xs text-zinc-300">{t.roleSubtitle}</span>
                     </div>
 
                     {/* Share Button */}
@@ -144,7 +141,7 @@ export function InfoScreen() {
                         }
                       }}
                     >
-                      Get in Touch
+                      {t.getInTouch}
                     </ShareButton>
                   </div>
                 </motion.div>
