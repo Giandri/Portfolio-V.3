@@ -375,12 +375,12 @@ export default function Home() {
         />
       </div>
       {/* Theme Toggle - Top/Bottom Left */}
-      <div className="fixed bottom-3 left-5 sm:top-4 sm:left-4 z-[1000]">
+      <div className="fixed bottom-5 left-8 sm:top-4 sm:left-4 z-[1000]">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
       {/* Language Toggle - Aligned with Dock on Right */}
-      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-[1000] flex items-center">
+      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-400 flex items-center">
         <LanguageToggle />
       </div>
 
