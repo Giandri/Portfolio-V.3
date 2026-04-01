@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useSpring, useInView } from "framer-motion";
 import { Play, Plus, ArrowUpRight } from "lucide-react";
 import {
   MediaControlBar,
@@ -14,7 +14,7 @@ import {
   MediaVolumeRange,
 } from "media-chrome/react";
 import type { ComponentProps } from "react";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
@@ -136,6 +136,13 @@ export const Skiper67 = ({
   link?: string;
 }) => {
   const [showVideoPopOver, setShowVideoPopOver] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: false, margin: "300px 0px" });
+
+  useEffect(() => {
+    setIsTouchDevice(('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
+  }, []);
 
   const SPRING = {
     mass: 0.1,
@@ -146,6 +153,7 @@ export const Skiper67 = ({
   const opacity = useSpring(0, SPRING);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isTouchDevice) return;
     opacity.set(1);
     const bounds = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - bounds.left);
@@ -154,10 +162,11 @@ export const Skiper67 = ({
 
   return (
     <motion.div
+      ref={containerRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2, duration: 0.5, ease: "easeIn" }}
-      className="relative flex h-full w-full items-center justify-center"
+      className="relative flex h-full w-full items-center justify-center bg-neutral-200 dark:bg-neutral-800"
     >
       <div className="absolute top-1/4 grid content-start justify-items-center gap-6 text-center">
 
@@ -182,26 +191,33 @@ export const Skiper67 = ({
         onClick={() => setShowVideoPopOver(true)}
         className="absolute inset-0 cursor-none w-full h-full"
       >
-        <motion.div
-          style={{ x, y, opacity }}
-          className="relative z-20 flex w-fit select-none items-center justify-center gap-2 p-2 text-sm text-white mix-blend-exclusion pointer-events-none"
-        >
-          <Play className="size-4 fill-white " /> Play
-        </motion.div>
-        <video
-          ref={(el) => {
-            if (el) {
-              el.muted = true;
-              el.play().catch(() => { });
-            }
-          }}
-          autoPlay
-          muted
-          playsInline
-          loop
-          src={videoSrc}
-          className="h-full w-full object-cover"
-        />
+        {!isTouchDevice && (
+          <motion.div
+            style={{ x, y, opacity }}
+            className="relative z-20 flex w-fit select-none items-center justify-center gap-2 p-2 text-sm text-white mix-blend-exclusion pointer-events-none"
+          >
+            <Play className="size-4 fill-white " /> Play
+          </motion.div>
+        )}
+        
+        {isInView ? (
+          <video
+            ref={(el) => {
+              if (el) {
+                el.muted = true;
+                el.play().catch(() => { });
+              }
+            }}
+            autoPlay
+            muted
+            playsInline
+            loop
+            src={videoSrc}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full animate-pulse bg-neutral-300 dark:bg-neutral-800" />
+        )}
       </div>
     </motion.div>
   );

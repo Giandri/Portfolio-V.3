@@ -22,7 +22,7 @@ const projectsBase = [
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/loggs-map.mp4",
     title: "Loggs Maps",
-    techStack: ["React", "Next.js", "Node.js", "PostgreSQL", "Prisma"],
+    techStack: ["React", "Next.js", "TailwindCSS", "Node.js", "PostgreSQL", "Prisma", "Leaflet"],
     id: "loggsMaps",
     link: "https://maps.loggsvisual.com"
   },
@@ -36,20 +36,20 @@ const projectsBase = [
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/portal-bwsbabel.mp4",
     title: "Service Public Portal BWS Babel",
-    techStack: ["Next.js", "Typescript", "PostgreSQL", "Prisma"],
+    techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Prisma"],
     id: "bwsPortal",
     link: "https://portal-pelayanan-publik.vercel.app"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/absen-bws.mp4",
     title: " Attendance Management BWS Babel",
-    techStack: ["Next.js", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI"],
+    techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI", "Leaflet"],
     id: "absenBws"
   },
   {
     videoSrc: "https://pub-434e08d6918245dc807499d029d98049.r2.dev/ptbsm1.mp4",
     title: "PT.BSM",
-    techStack: ["Next.js", "Typescript", "Shadcn UI", "Framer Motion"],
+    techStack: ["Next.js", "TailwindCSS", "Typescript", "Shadcn UI", "Framer Motion"],
     id: "ptBsm",
     link: "https://ptbsm.vercel.app"
   }
@@ -140,10 +140,10 @@ export function WorksScreen() {
 
             {/* Left and Right Progressive Blur Edges */}
             <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 lg:w-48 z-10 pointer-events-none">
-              <ProgressiveBlur direction="left" className="w-full h-full" blurIntensity={1} />
+              <ProgressiveBlur direction="left" className="w-full h-full" blurIntensity={1} blurLayers={isDesktop ? 6 : 2} />
             </div>
             <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-48 z-10 pointer-events-none">
-              <ProgressiveBlur direction="right" className="w-full h-full" blurIntensity={1} />
+              <ProgressiveBlur direction="right" className="w-full h-full" blurIntensity={1} blurLayers={isDesktop ? 6 : 2} />
             </div>
           </div>
         )}

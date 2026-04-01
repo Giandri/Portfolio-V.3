@@ -4,10 +4,19 @@ import { Marquee } from "@/components/ui/marquee";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { HyperText } from "@/components/ui/hyper-text";
 import { useLanguage } from "@/context/language-provider";
+import { useState, useEffect } from "react";
 
 
 export function HomeScreen() {
   const { t } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const marqueeItems = [
     ...t.marqueeWelcome,
@@ -23,7 +32,7 @@ export function HomeScreen() {
           direction="left"
           className="absolute left-0 top-0 bottom-0 w-24 z-10 "
           blurIntensity={1}
-          blurLayers={6}
+          blurLayers={isMobile ? 2 : 6}
         />
 
         {/* Progressive Blur - Right */}
@@ -31,7 +40,7 @@ export function HomeScreen() {
           direction="right"
           className="absolute right-0 top-0 bottom-0 w-24 z-10"
           blurIntensity={1}
-          blurLayers={6}
+          blurLayers={isMobile ? 2 : 6}
         />
 
         <Marquee pauseOnHover className="lg:[--duration:2s] [--duration:8s]">
