@@ -52,15 +52,15 @@ function useIsMobile() {
 const dockItems = [
   {
     id: "home",
-    gradient: "https://products.ls.graphics/mesh-gradients/images/03.-Snowy-Mint_1-p-130x130q80.jpeg",
-    icon: <HomeIcon size={32} className="text-black dark:text-white" />,
+    gradient: "linear-gradient(135deg, #ffffff 0%, #f97316 40%, #ea580c 60%, #000000 100%)", // White -> Orange -> Black
+    icon: <HomeIcon size={30} className=" text-black dark:text-white" />,
     title: "Home",
     bgColor: "dark:bg-stone-900 bg-neutral-200",
   },
   {
     id: "works",
-    gradient: "https://products.ls.graphics/mesh-gradients/images/04.-Hopbush_1-p-130x130q80.jpeg",
-    icon: <FoldersIcon size={32} className="text-black dark:text-white" />,
+    gradient: "linear-gradient(135deg, #ffffff 0%, #ef4444 40%, #dc2626 60%, #000000 100%)", // White -> Red -> Black
+    icon: <FoldersIcon size={30} className=" text-black dark:text-white" />,
     title: "Works",
     bgColor: "dark:bg-stone-900 bg-neutral-200",
   },
@@ -73,8 +73,8 @@ const dockItems = [
   },
   {
     id: "info",
-    gradient: "https://products.ls.graphics/mesh-gradients/images/36.-Pale-Chestnut-p-130x130q80.jpeg",
-    icon: <IdCardIcon size={32} className="text-black dark:text-white" />,
+    gradient: "linear-gradient(135deg, #ffffff 0%, #d1d5db 40%, #6b7280 60%, #000000 100%)", // White -> Silver -> Black
+    icon: <IdCardIcon size={30} className=" text-black dark:text-white" />,
     title: "Info",
     bgColor: "dark:bg-stone-900 bg-neutral-200",
   },
@@ -162,7 +162,6 @@ function DockWithExpandable({
     if (isMobile) {
       return dockItems.filter(item => item.id === 'home' || item.id === 'works' || item.id === 'info' || item.id === 'divider');
     }
-    // On larger screens, show all items
     return dockItems;
   };
 
@@ -206,8 +205,6 @@ export default function Home() {
   const { t } = useLanguage();
   const [isPointer, setIsPointer] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-
-  // DebugPanel states
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const [time, setTime] = useState("");
@@ -219,12 +216,9 @@ export default function Home() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
   const [keyPressed, setKeyPressed] = useState("");
-
-  // Expandable screen state
   const [expandedItem, setExpandedItem] = useState<(typeof dockItems)[0] | null>(null);
-
-  // Global ESC key handler for closing expandable screens
   useEffect(() => {
     const handleGlobalEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -257,7 +251,6 @@ export default function Home() {
       setShowIntro(false);
     }, 500);
   }, []);
-
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     mouseX.set(e.clientX);
@@ -375,12 +368,12 @@ export default function Home() {
         />
       </div>
       {/* Theme Toggle - Top/Bottom Left */}
-      <div className="fixed bottom-5 left-8 sm:top-4 sm:left-4 z-[1000]">
+      <div className="fixed bottom-4 left-8 sm:top-4 sm:left-4 z-[1000]">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
       {/* Language Toggle - Aligned with Dock on Right */}
-      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-400 flex items-center">
+      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-[400] flex items-center">
         <LanguageToggle />
       </div>
 

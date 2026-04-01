@@ -145,25 +145,29 @@ interface DockCardInnerProps {
   children?: ReactNode // Optional children for the card
 }
 
-// DockCardInner component to display images and handle animation states
 function DockCardInner({ src, id, children }: DockCardInnerProps) {
-  const { activeIndex, animatingIndexes } = useDock() // Access the Dock context to get active index and animating indexes
-  const isActive = activeIndex === parseInt(id) // Check if this card is the currently active one
+  const { activeIndex, animatingIndexes } = useDock() 
+  const isActive = activeIndex === parseInt(id) 
+  
+  const isImage = src?.startsWith("http") || src?.startsWith("/") || src?.startsWith("data:");
 
   return (
     <span className="relative flex justify-center items-center z-0 overflow-hidden w-full h-full rounded-md">
-      {/* Background image with a blur effect to give a depth illusion */}
-      <motion.img
-        className="absolute z-10 opacity-60 filter blur-sm transform translate-y-2.5 scale-125 "
-        src={src}
-        alt=""
-        onError={(e) => {
-          console.error('Failed to load gradient image:', src);
-          e.currentTarget.style.display = 'none';
-        }}
-      />
+      {/* Background shadow/glow */}
+      {isImage ? (
+        <motion.img
+          className="absolute z-10 opacity-60 filter blur-sm transform translate-y-2.5 scale-125"
+          src={src}
+          alt=""
+        />
+      ) : (
+        <motion.div
+          className="absolute z-10 opacity-60 filter blur-sm w-full h-full transform translate-y-2.5 scale-125"
+          style={{ background: src }}
+        />
+      )}
 
-      {/* AnimatePresence component to handle the entrance and exit animations of children - in our case, the "openIcon" */}
+      {/* AnimatePresence component to handle the entrance and exit animations of children */}
       <AnimatePresence>
         {isActive && children ? (
           <motion.div
@@ -173,17 +177,16 @@ function DockCardInner({ src, id, children }: DockCardInnerProps) {
               scale: 1,
               opacity: 1,
               filter: "blur(0px)",
-              transition: { type: "spring", delay: 0.2 }, // Animation to spring into place with a delay so our layoutId animations can be smooth
+              transition: { type: "spring", delay: 0.2 }, 
             }}
             exit={{
               scale: 0,
               opacity: 0,
               filter: "blur(4px)",
-              transition: { duration: 0 }, // Exit animation with no delay
+              transition: { duration: 0 }, 
             }}
           >
             <div className="h-full w-full flex flex-col items-center justify-center">
-              {/* Render the openIcon */}
               {children}
             </div>
           </motion.div>
@@ -193,12 +196,20 @@ function DockCardInner({ src, id, children }: DockCardInnerProps) {
       {/* Another AnimatePresence to handle layout animations */}
       <AnimatePresence mode="popLayout">
         {!animatingIndexes.includes(parseInt(id)) ? (
-          <motion.img
-            layoutId={id} // Unique identifier for layout animations
-            className="relative z-0 w-1/2 h-1/2 rounded-full border border-black/30 dark:border-white/10"
-            src={src}
-            alt=""
-          />
+          isImage ? (
+            <motion.img
+              layoutId={id} 
+              className="relative z-0 w-1/2 h-1/2 rounded-full border border-black/30 dark:border-white/10"
+              src={src}
+              alt=""
+            />
+          ) : (
+            <motion.div
+              layoutId={id} 
+              className="relative z-0 w-1/2 h-1/2 rounded-full border border-black/30 dark:border-white/10"
+              style={{ background: src }}
+            />
+          )
         ) : null}
       </AnimatePresence>
     </span>
@@ -346,10 +357,10 @@ function DockCard({ children, id }: DockCardProps) {
       {/* Motion button for the card, handling click events and animations */}
       <motion.button
         ref={cardRef} // Reference to the button element
-        className="rounded-lg border aspect-square dark:border-white/5 border-black/5 border-opacity-10 dark:bg-neutral-800 bg-neutral-100 saturate-90 brightness-90 transition-filter duration-200 hover:saturate-100 hover:brightness-112 min-w-[32px] sm:min-w-[40px] w-8 sm:w-12"
+        className="rounded-lg border aspect-square dark:border-white/5 border-black/5 border-opacity-10 dark:bg-neutral-800 bg-neutral-100 saturate-90 brightness-90 transition-filter duration-200 sm:hover:saturate-100 sm:hover:brightness-112 min-w-[32px] sm:min-w-[40px] w-8 sm:w-12"
         onClick={handleClick} // Click handler to start/stop animation
         style={{
-          width: width, // Responsive width based on mouse distance
+          width: isMobile ? minWidth : width, // Fixed width on mobile, responsive on desktop
         }}
         animate={controls} // Animation controls for Y position
         whileTap={{ scale: 0.95 }} // Scale down slightly on tap for a tactile feel

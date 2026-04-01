@@ -85,7 +85,7 @@ export const DebugPanel = ({
         </div>
       ))}
       <div className="ml-4">
-        copyright: "© {new Date().getFullYear()} Giandri Aditio";
+        copyright: "©{new Date().getFullYear()}|Giandri Aditio";
       </div>
       {"}"}
     </div>
