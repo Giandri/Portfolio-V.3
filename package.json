@@ -16,7 +16,6 @@
     "@react-three/fiber": "^9.5.0",
     "@react-three/postprocessing": "^3.0.4",
     "@spaceymonk/react-radial-menu": "^2.1.0",
-    "@splinetool/react-spline": "^4.1.0",
     "@vercel/blob": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

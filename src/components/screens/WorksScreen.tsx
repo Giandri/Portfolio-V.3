@@ -1,22 +1,12 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { Skiper67 } from '../ui/skiper-ui/skiper67';
 import { motion } from "framer-motion";
 import { MorphingText } from '../ui/morphing-text';
 import { Marquee } from '../ui/marquee';
 import { ProgressiveBlur } from '../ui/progressive-blur';
 import { useLanguage } from '@/context/language-provider';
-
-const Spline = dynamic(() => import('@splinetool/react-spline'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-background">
-      <div className="animate-pulse font-mono text-muted-foreground">Loading 3D...</div>
-    </div>
-  ),
-});
 
 const projectsBase = [
   {
@@ -78,16 +68,6 @@ export function WorksScreen() {
 
   return (
     <div className="w-full min-h-screen relative bg-background text-foreground transition-colors z-400 overflow-x-hidden md:overflow-hidden">
-
-      {/* 3D Background */}
-      <div className="fixed inset-0 pointer-events-none z-[100]">
-        {isDesktop && (
-          <Spline
-            scene="https://prod.spline.design/1PUC3yoNBjKkfudo/scene.splinecode"
-            className="w-full h-full pointer-events-auto"
-          />
-        )}
-      </div>
 
       <motion.h1
         initial={{ opacity: 0, y: 20 }}

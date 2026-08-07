@@ -31,10 +31,12 @@ export default function RootLayout({
         <link
           href="https://api.fontshare.com/v2/css?f[]=aktura@400&display=swap"
           rel="stylesheet"
+          suppressHydrationWarning
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Almendra:wght@400&display=swap"
           rel="stylesheet"
+          suppressHydrationWarning
         />
       </head>
       <body
