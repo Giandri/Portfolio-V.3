@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { ArrowDownToLine, X } from "lucide-react";
+import { ArrowDownToLine, FileText, Menu, X } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLanguage } from "@/context/language-provider";
@@ -24,6 +24,7 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isHover, setIsHover] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const drag = useRef<{
     pointerId: number;
     startX: number;
@@ -90,22 +91,29 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
               </button>
               <span className="w-3 h-3 rounded-full bg-[#ECB948]" />
               <span className="w-3 h-3 rounded-full bg-[#62BB4B]" />
+              <button
+                type="button"
+                aria-label="Toggle sidebar"
+                onClick={() => setSidebarOpen((v) => !v)}
+                className="sm:hidden w-6 h-6 flex items-center justify-center rounded text-white/70 hover:bg-white/10 dark:text-black/70 dark:hover:bg-black/10 outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <Menu className="w-3.5 h-3.5" />
+              </button>
             </div>
             <h1 className="flex-1 text-[13px] font-medium leading-none tracking-tight text-center text-white/80 dark:text-black/80">Information about: Giandri Aditio, halo@giandri.my.id</h1>
-            <div className="w-[52px]" />
+            <div className="w-[52px] sm:w-[76px]" />
           </div>
         </nav>
 
         {/* Body */}
         <div className="flex-1 flex overflow-hidden">
           {/* Sidebar */}
-          <aside className="shrink-0 w-40 sm:w-48 bg-[#09090b]/90 border-r border-white/25 dark:bg-[#EFEBEA]/90 dark:border-black/25">
+          <aside className={"shrink-0 w-32 sm:w-48 bg-[#09090b]/90 border-r border-white/25 dark:bg-[#EFEBEA]/90 dark:border-black/25 " + (isMobile && !sidebarOpen ? "hidden" : "")}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActive(tab.id)}
                 className={
-                  "w-full flex items-center justify-between gap-2 px-3 py-2.5 text-left text-[13px] font-medium leading-tight tracking-tight transition-colors " +
+                  "w-full flex items-center justify-between gap-2 px-2.5 sm:px-3 py-2.5 text-left text-[12px] sm:text-[13px] font-medium leading-tight tracking-tight transition-colors " +
                   (active === tab.id ? "bg-white text-black dark:bg-white dark:text-black" : "text-white/80 hover:bg-white/10 dark:text-black/80 dark:hover:bg-black/10")
                 }>
                 <span>{tab.label}</span>
@@ -116,7 +124,7 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
             <a
               href="/resume.pdf"
               download="Giandri-Aditio-CV.pdf"
-              className="mt-2 flex items-center justify-center gap-2 px-3 py-2.5 text-[13px] font-medium leading-tight tracking-tight text-white/80 hover:bg-white/10 dark:text-black/80 dark:hover:bg-black/10">
+              className="mt-2 flex items-center justify-center gap-2 px-2.5 sm:px-3 py-2.5 text-[12px] sm:text-[13px] font-medium leading-tight tracking-tight text-white/80 hover:bg-white/10 dark:text-black/80 dark:hover:bg-black/10">
               <ArrowDownToLine className="w-3.5 h-3.5" />
               Install
             </a>
@@ -144,18 +152,10 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <p className="text-white dark:text-black">{item.title}</p>
-                          <p className="text-white/60 dark:text-black/60">{item.org}</p>
+                          <p className="text-white dark:text-black">{item.org}</p>
                         </div>
                         <p className="shrink-0 text-white/50 dark:text-black/50">{item.period}</p>
                       </div>
-                      <ul className="mt-2 space-y-1.5">
-                        {item.bullets.map((bullet, i) => (
-                          <li key={i} className="flex items-start gap-2 text-white/70 dark:text-black/70">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#FCB726] shrink-0 mt-[2px]" />
-                            {bullet}
-                          </li>
-                        ))}
-                      </ul>
                     </li>
                   ))}
                 </ul>
@@ -164,7 +164,15 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
 
             {active === "cv" && (
               <div className="h-full">
-                <PDFViewer src="/resume.pdf" />
+                <div className="h-full flex flex-col items-center justify-center gap-3 sm:hidden">
+                  <span className="flex h-16 w-20 shrink-0 items-center justify-center rounded-lg bg-white/5 dark:bg-black/5">
+                    <FileText className="w-10 h-12 text-white/80 dark:text-black/80" />
+                  </span>
+                  <span className="text-[11px] text-white/70 dark:text-black/70">resume.pdf</span>
+                </div>
+                <div className="hidden h-full sm:block">
+                  <PDFViewer src="/resume.pdf" />
+                </div>
               </div>
             )}
           </main>

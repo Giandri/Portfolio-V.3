@@ -239,7 +239,7 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8 z-1000 transition-colors duration-500" onMouseMove={handleMouseMove}>
       {/* Background */}
       <img src="/images/bg.jpg" alt="" draggable={false} className="fixed inset-0 w-full h-full object-cover z-0" />
-      <ProgressiveBlur direction="bottom" blurLayers={10} blurIntensity={1} className="fixed inset-0 z-1" />
+      <ProgressiveBlur direction="bottom" blurLayers={10} blurIntensity={1} className="fixed inset-0 z-1 max-sm:hidden" />
       {/*Intro */}
       <AnimatePresence>
         {showIntro && (
@@ -315,6 +315,9 @@ export default function Home() {
                 <div className="hidden max-sm:flex">
                   <LanguageToggle />
                 </div>
+                <div className="hidden max-sm:flex">
+                  <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
+                </div>
               </div>
             </div>
           )}
@@ -323,8 +326,8 @@ export default function Home() {
           }}
         />
       </div>
-      {/* Theme Toggle - Top/Bottom Left */}
-      <div className="fixed bottom-4 left-8 sm:top-4 sm:left-4 sm:bottom-auto z-[1000] flex items-center">
+      {/* Theme Toggle - Desktop: Top Left */}
+      <div className="fixed bottom-4 left-8 sm:top-4 sm:left-4 sm:bottom-auto z-[1000] hidden sm:flex items-center">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
