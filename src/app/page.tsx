@@ -22,9 +22,6 @@ import { useLanguage } from "@/context/language-provider";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProjectCard } from "@/components/ui/project-card";
-import { VuMeter } from "@/components/ui/vu-meter";
-import { CalendarWidget } from "@/components/ui/calendar-widget";
-import { GithubGraph } from "@/components/unlumen-ui/github-graph";
 
 const dockItems = [
   {
@@ -165,7 +162,7 @@ export default function Home() {
 
   const [keyPressed, setKeyPressed] = useState("");
   const [openItems, setOpenItems] = useState<(typeof dockItems)[0][]>([]);
-  const [showWidgets, setShowWidgets] = useState(true);
+
   const [morphOpen, setMorphOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -315,18 +312,6 @@ export default function Home() {
                 }}
               />
               <div className="hidden items-center justify-between gap-2 px-3 max-sm:flex">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-muted-foreground">Widgets</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowWidgets((v) => !v)}
-                    className="relative flex h-8 w-16 items-center justify-between rounded-full p-1 transition-colors bg-black/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg shadow-black/1"
-                    aria-label="Toggle widgets">
-                    <span className="absolute left-2.5 text-[10px] font-bold text-neutral-500 dark:text-neutral-400">ON</span>
-                    <span className="absolute right-2.5 text-[10px] font-bold text-neutral-500 dark:text-neutral-400">OFF</span>
-                    <motion.div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm dark:bg-black" animate={{ x: showWidgets ? 32 : 0 }} transition={{ type: "spring", stiffness: 500, damping: 30 }} />
-                  </button>
-                </div>
                 <div className="hidden max-sm:flex">
                   <LanguageToggle />
                 </div>
