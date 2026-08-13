@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Skiper67 } from '../ui/skiper-ui/skiper67';
-import { motion } from "framer-motion";
-import { MorphingText } from '../ui/morphing-text';
-import { Marquee } from '../ui/marquee';
-import { ProgressiveBlur } from '../ui/progressive-blur';
-import { useLanguage } from '@/context/language-provider';
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
+import { Skiper67 } from "../ui/skiper-ui/skiper67";
+import { useLanguage } from "@/context/language-provider";
 
 const projectsBase = [
   {
@@ -14,120 +11,123 @@ const projectsBase = [
     title: "Loggs Maps",
     techStack: ["React", "Next.js", "TailwindCSS", "Node.js", "PostgreSQL", "Prisma", "Leaflet"],
     id: "loggsMaps",
-    link: "https://maps.loggsvisual.com"
+    link: "https://maps.loggsvisual.com",
   },
   {
     videoSrc: "https://assets.giandri.my.id/loggs.mp4",
     title: "Loggs Visual Profile",
     techStack: ["Next.js", "TailwindCSS", "Framer Motion", "Shadcn UI"],
     id: "loggsVisual",
-    link: "https://www.loggsvisual.com"
+    link: "https://www.loggsvisual.com",
   },
   {
     videoSrc: "https://assets.giandri.my.id/portal-bwsbabel.mp4",
     title: "Service Public Portal BWS Babel",
     techStack: ["Next.js", "TailwindCSS", "Node.js", "Axios", "Typescript", "PostgreSQL", "Prisma"],
     id: "bwsPortal",
-    link: "https://portal-pelayanan-publik.vercel.app"
+    link: "https://portal-pelayanan-publik.vercel.app",
   },
   {
     videoSrc: "https://assets.giandri.my.id/absen-bws.mp4",
     title: " Attendance Management BWS Babel",
     techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI", "Leaflet"],
-    id: "absenBws"
+    id: "absenBws",
   },
   {
     videoSrc: "https://assets.giandri.my.id/ptbsm1.mp4",
     title: "PT.BSM",
     techStack: ["Next.js", "TailwindCSS", "Typescript", "Shadcn UI", "Framer Motion"],
     id: "ptBsm",
-    link: "https://bsmbabel.vercel.app"
-  }
+    link: "https://bsmbabel.vercel.app",
+  },
 ];
 
-export function WorksScreen() {
-  const { t } = useLanguage();
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  const projects = projectsBase.map(p => ({
-    ...p,
-    description: t.projects[p.id as keyof typeof t.projects]
-  }));
+function useVideoAspect(src: string) {
+  const [aspect, setAspect] = useState<string | undefined>();
 
   useEffect(() => {
-    const checkDesktop = () => {
-      const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
-      const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-      setIsDesktop(isLargeScreen && !isTouchDevice);
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.onloadedmetadata = () => {
+      if (v.videoWidth && v.videoHeight) setAspect(`${v.videoWidth} / ${v.videoHeight}`);
     };
+    v.src = src;
+  }, [src]);
 
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
+  return aspect;
+}
+
+export function WorksScreen({ onClose, onActivate }: { onClose: () => void; onActivate?: () => void }) {
+  const { t } = useLanguage();
+
+  const projects = projectsBase.map((p) => ({
+    ...p,
+    description: t.projects[p.id as keyof typeof t.projects],
+  }));
 
   return (
-    <div className="w-full min-h-screen relative bg-background text-foreground transition-colors z-400 overflow-x-hidden md:overflow-hidden">
+    <div className="relative w-full min-h-screen flex items-center justify-center p-3 sm:p-6">
+      {/* Blurred backdrop */}
+      <div className="fixed inset-0 z-[90]  " />
 
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-[12vw] lg:text-[10rem] leading-[0.8] font-bold text-black dark:text-white tracking-tighter fixed top-32 md:top-20  inset-x-0 z-[500] flex pointer-events-none"
-      >
-        <MorphingText
-          texts={t.worksTitle}
-          className="text-7xl sm:text-6xl lg:text-8xl"
-        />
-      </motion.h1>
+      {/* macOS Window */}
+      <div className="relative z-[100] w-[97vw] h-[90vh] max-w-[1200px] rounded-[10px] border border-white/25 bg-[#09090b] shadow-[1px_2px_3px_rgba(0,0,0,0.25)] flex flex-col overflow-hidden text-white pointer-events-auto dark:border-black/25 dark:bg-[#EFEBEA] dark:text-black" onPointerDown={onActivate}>
+        {/* Top Bar */}
+        <nav className="shrink-0 flex items-center justify-between px-3 py-2 border-b border-white/25 bg-[#09090b] dark:border-black/25 dark:bg-[#EFEBEA]">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={onClose}
+              className="group relative w-3 h-3 rounded-full bg-[#E06551] flex items-center justify-center hover:bg-[#d04d3a] outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <X className="w-2 h-2 text-white/60 opacity-0 group-hover:opacity-100" strokeWidth={3} />
+            </button>
+            <span className="w-3 h-3 rounded-full bg-[#ECB948]" />
+            <span className="w-3 h-3 rounded-full bg-[#62BB4B]" />
+          </div>
+          <h1 className="flex-1 text-[13px] font-medium leading-none tracking-tight text-center text-white/80 dark:text-black/80">Information about: Works</h1>
+          <div className="w-3" />
+        </nav>
 
-      {/* Projects Container*/}
-      <div className="relative z-[500] w-full pt-[30vh] md:pt-0 min-h-screen flex items-center justify-center pointer-events-none pb-40 md:pb-0 px-5 md:px-0">
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto scrollbar-none p-4 sm:p-6 space-y-6">
+          {/* Cover & Title */}
+          <header className="flex items-center gap-3">
+            <img src="/images/dock/works.png" alt="" className="w-12 h-12 object-contain rounded-[4px]" />
+            <div className="min-w-0">
+              <h2 className="text-[13px] font-bold leading-tight text-white dark:text-black">Works</h2>
+              <p className="text-[13px] font-medium leading-tight text-white/60 dark:text-black/60">Recent Works</p>
+            </div>
+          </header>
 
-        {/* MOBILE: 1 Column */}
-        {!isDesktop && (
-          <div className="flex flex-col items-center gap-8 w-full">
-            {projects.map((p, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ delay: 1.5 + i * 0.1, duration: 1, ease: "easeIn" }}
-                className="pointer-events-auto overflow-hidden w-[85vw] max-w-[360px] aspect-video shadow-2xl"
-              >
-                <Skiper67 {...p} />
-              </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {projects.map((p) => (
+              <article key={p.id} className="flex flex-col gap-2">
+                <div className="relative overflow-hidden aspect-video rounded-[10px] border border-white/10 bg-white/10 dark:border-black/10 dark:bg-black">
+                  <Skiper67 {...p} />
+                </div>
+                <div className="flex items-start justify-between gap-2 px-1">
+                  <div className="min-w-0">
+                    <h3 className="text-[13px] font-bold leading-tight text-white dark:text-black">{p.title}</h3>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {p.techStack.slice(0, 4).map((tech) => (
+                        <span key={tech} className="text-[11px] font-medium text-white/60 dark:text-black/60">
+                          {tech}
+                        </span>
+                      ))}
+                      {p.techStack.length > 4 && <span className="text-[11px] font-medium text-white/40 dark:text-black/40">+{p.techStack.length - 4}</span>}
+                    </div>
+                  </div>
+                  {p.link && (
+                    <a href={p.link} target="_blank" rel="noopener noreferrer" className="shrink-0 text-[11px] font-medium text-white/80 underline underline-offset-2 hover:text-white dark:text-black/80 dark:hover:text-black">
+                      Visit
+                    </a>
+                  )}
+                </div>
+              </article>
             ))}
           </div>
-        )}
-
-        {/* DESKTOP: Marquee */}
-        {isDesktop && (
-          <div className="hidden md:flex w-full items-center pointer-events-auto overflow-hidden mt-[15vh] lg:mt-0 xl:mt-20 relative">
-            <Marquee pauseOnHover className="[--duration:40s]" repeat={2}>
-              {projects.map((p, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ delay: 1.5 + i * 0.1, duration: 1, ease: "easeIn" }}
-                  className="overflow-hidden aspect-video md:w-[260px] md:h-[146px] lg:w-[320px] lg:h-[180px] mx-4 shrink-0 "
-                >
-                  <Skiper67 {...p} />
-                </motion.div>
-              ))}
-            </Marquee>
-
-            {/* Left and Right Progressive Blur Edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 lg:w-48 z-10 pointer-events-none">
-              <ProgressiveBlur direction="left" className="w-full h-full" blurIntensity={1} blurLayers={isDesktop ? 6 : 2} />
-            </div>
-            <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-48 z-10 pointer-events-none">
-              <ProgressiveBlur direction="right" className="w-full h-full" blurIntensity={1} blurLayers={isDesktop ? 6 : 2} />
-            </div>
-          </div>
-        )}
-
+        </div>
       </div>
     </div>
   );

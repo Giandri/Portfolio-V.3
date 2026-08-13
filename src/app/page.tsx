@@ -1,17 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { X, ArrowUpRight } from "lucide-react";
 import { AnimatePresence, motion, time } from "motion/react";
-import {
-  Dock,
-  DockCard,
-  DockCardInner,
-  DockDivider,
-} from "@/components/ui/dock";
-import { HomeIcon } from "@/components/ui/home";
-import { FoldersIcon } from "@/components/ui/folders";
-import { IdCardIcon } from "@/components/ui/id-card";
+import { Dock, DockCard, DockCardInner, DockDivider } from "@/components/ui/dock";
 import { Fps } from "@/components/ui/fps";
 import { Cursor } from "@/components/ui/cursor";
 import { AppleHelloEnglishEffect } from "@/components/apple-hello-effect";
@@ -20,74 +12,66 @@ import { DebugPanel } from "@/components/ui/skiper-ui/skiper102";
 import { ThemeToggleButton } from "@/components/ui/skiper-ui/skiper26";
 import { HomeScreen } from "@/components/screens/HomeScreen";
 import { WorksScreen } from "@/components/screens/WorksScreen";
-import { InfoScreen } from "@/components/screens/InfoScreen";
+import { FileSystemScreen } from "@/components/screens/FileSystemScreen";
 import { useMotionValue } from "motion/react";
 import { MorphingText } from "@/components/ui/morphing-text";
 import { MorphSurface } from "@/components/ui/morph-surface";
 import { ConversationBar } from "@/components/ui/conversation-bar";
+import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { useLanguage } from "@/context/language-provider";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ProjectCard } from "@/components/ui/project-card";
+import { VuMeter } from "@/components/ui/vu-meter";
+import { CalendarWidget } from "@/components/ui/calendar-widget";
+import { GithubGraph } from "@/components/unlumen-ui/github-graph";
 
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent;
-    const isSmall = window.matchMedia("(max-width: 768px)").matches;
-    const isMobile = Boolean(
-      /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.exec(
-        userAgent
-      )
-    );
-    const isDev = process.env.NODE_ENV !== "production";
-    if (isDev) setIsMobile(isSmall || isMobile);
-    setIsMobile(isSmall && isMobile);
-  }, []);
-
-  return isMobile;
-}
-
-// Data untuk dock items
 const dockItems = [
   {
     id: "home",
-    gradient: "linear-gradient(135deg, #ffffff 0%, #f97316 40%, #ea580c 60%, #000000 100%)", // White -> Orange -> Black
-    icon: <HomeIcon size={30} className=" text-black dark:text-white" />,
-    title: "Home",
-    bgColor: "dark:bg-stone-900 bg-neutral-200",
+    src: "/images/dock/notes.png",
+    title: "CV!",
   },
   {
     id: "works",
-    gradient: "linear-gradient(135deg, #ffffff 0%, #ef4444 40%, #dc2626 60%, #000000 100%)", // White -> Red -> Black
-    icon: <FoldersIcon size={30} className=" text-black dark:text-white" />,
+    src: "/images/dock/works.png",
     title: "Works",
-    bgColor: "dark:bg-stone-900 bg-neutral-200",
   },
   {
-    id: "divider",
-    gradient: null,
-    icon: null,
+    id: "gallery",
+    src: "/images/dock/gallery.png",
+    title: "Gallery",
+  },
+  {
+    id: "divider1",
+    src: null,
     title: null,
-    bgColor: null,
+  },
+  {
+    id: "mail",
+    src: "/images/dock/mail.png",
+    title: "Mail",
+    href: "mailto:halo@giandri.my.id",
+  },
+  {
+    id: "divider2",
+    src: null,
+    title: null,
+  },
+  {
+    id: "files",
+    src: "/images/dock/drive.png",
+    title: "Files",
   },
   {
     id: "info",
-    gradient: "linear-gradient(135deg, #ffffff 0%, #d1d5db 40%, #6b7280 60%, #000000 100%)", // White -> Silver -> Black
-    icon: <IdCardIcon size={30} className=" text-black dark:text-white" />,
-    title: "Info",
-    bgColor: "dark:bg-stone-900 bg-neutral-200",
+    src: "/images/dock/bin.png",
+    title: "Bin",
   },
 ];
 
 // Full page container component
-function FullPageContainer({
-  item,
-  onClose,
-}: {
-  item: (typeof dockItems)[0];
-  onClose: () => void;
-}) {
+function FullPageContainer({ item, onClose, onRaise, index }: { item: (typeof dockItems)[0]; onClose: () => void; onRaise: () => void; index?: number }) {
   // Allow scroll for Skiper28 component
   useEffect(() => {
     document.body.style.overflow = "auto";
@@ -107,95 +91,57 @@ function FullPageContainer({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[100] overflow-y-auto overflow-x-hidden"
-    >
-      {/* Background gradient */}
-      <motion.div
-        initial={{ scale: 0, borderRadius: "50%" }}
-        animate={{ scale: 1, borderRadius: "0%" }}
-        exit={{ scale: 0, borderRadius: "50%" }}
-        transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-        className={`fixed inset-0 ${item.bgColor} cursor-pointer border shadow-2xl`}
-        style={{ transformOrigin: "bottom center" }}
-        onClick={onClose}
-      />
-
-      {/* Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 50 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        className="relative z-10 min-h-screen w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Main content area */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {item.id === "home" && <HomeScreen />}
-          {item.id === "works" && <WorksScreen />}
-          {item.id === "info" && <InfoScreen />}
-        </motion.div>
-      </motion.div>
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.6 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      style={{ transformOrigin: "center" }}
+      className="fixed inset-0 z-100 overflow-y-auto overflow-x-hidden scrollbar-none pointer-events-none">
+      <div className="relative z-10 min-h-screen w-full" style={{ paddingTop: (index ?? 0) * 24 }} onClick={(e) => e.stopPropagation()}>
+        {item.id === "home" && <HomeScreen onClose={onClose} onActivate={onRaise} />}
+        {item.id === "works" && <WorksScreen onClose={onClose} onActivate={onRaise} />}
+        {item.id === "files" && <FileSystemScreen onClose={onClose} onActivate={onRaise} />}
+        {item.id === "info" && <FileSystemScreen onClose={onClose} defaultPath="Trash/" onActivate={onRaise} />}
+      </div>
     </motion.div>
   );
 }
 
-function DockWithExpandable({
-  expandedItem,
-  setExpandedItem
-}: {
-  expandedItem: (typeof dockItems)[0] | null;
-  setExpandedItem: (item: (typeof dockItems)[0] | null) => void;
-}) {
-  const isMobile = useIsMobile();
-
-
-  const getResponsiveItems = (): (typeof dockItems) => {
-    if (isMobile) {
-      return dockItems.filter(item => item.id === 'home' || item.id === 'works' || item.id === 'info' || item.id === 'divider');
-    }
-    return dockItems;
-  };
-
-  const responsiveItems = getResponsiveItems();
-
-  const handleDockClick = (item: (typeof dockItems)[0]) => {
-    if (item.gradient) {
-
-      if (expandedItem?.id === item.id) {
-
-        setExpandedItem(null);
-      } else {
-
-        setExpandedItem(item);
-      }
-    }
-  };
-
+function DockWithExpandable({ openItems, onToggle }: { openItems: (typeof dockItems)[0][]; onToggle: (item: (typeof dockItems)[0]) => void }) {
   return (
     <div className="relative w-full h-full">
-      <Dock className="z-[200] fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2">
-        {responsiveItems.map((item, index) =>
-          item.gradient ? (
-            <div key={item.id} onClick={() => handleDockClick(item)}>
-              <DockCard id={`${index}`}>
-                <DockCardInner src={item.gradient} id={`${index}`}>
-                  {item.icon}
-                </DockCardInner>
-              </DockCard>
-            </div>
-          ) : (
-            <DockDivider key={item.id} />
-          )
-        )}
+      <Dock className="z-200 fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2">
+        <TooltipProvider delayDuration={0}>
+          {dockItems.map((item) =>
+            item.href ?
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <a href={item.href}>
+                    <DockCard>
+                      <DockCardInner src={item.src} />
+                    </DockCard>
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={12}>
+                  {item.title}
+                </TooltipContent>
+              </Tooltip>
+            : item.src ?
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <div onClick={() => onToggle(item)}>
+                    <DockCard>
+                      <DockCardInner src={item.src} />
+                    </DockCard>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" sideOffset={12}>
+                  {item.title}
+                </TooltipContent>
+              </Tooltip>
+            : <DockDivider key={item.id} />,
+          )}
+        </TooltipProvider>
       </Dock>
     </div>
   );
@@ -218,11 +164,21 @@ export default function Home() {
   }, []);
 
   const [keyPressed, setKeyPressed] = useState("");
-  const [expandedItem, setExpandedItem] = useState<(typeof dockItems)[0] | null>(null);
+  const [openItems, setOpenItems] = useState<(typeof dockItems)[0][]>([]);
+  const [showWidgets, setShowWidgets] = useState(true);
+  const [morphOpen, setMorphOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
   useEffect(() => {
     const handleGlobalEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setExpandedItem(null);
+        setOpenItems([]);
       }
     };
 
@@ -230,16 +186,30 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleGlobalEscape);
   }, []);
 
+  const toggleItem = useCallback((item: (typeof dockItems)[0]) => {
+    setOpenItems((prev) => (prev.some((i) => i.id === item.id) ? prev.filter((i) => i.id !== item.id) : [...prev, item]));
+  }, []);
+
+  const closeItem = useCallback((id: string) => {
+    setOpenItems((prev) => prev.filter((i) => i.id !== id));
+  }, []);
+
+  const raiseItem = useCallback((id: string) => {
+    setOpenItems((prev) => {
+      const idx = prev.findIndex((i) => i.id === id);
+      if (idx === -1 || idx === prev.length - 1) return prev;
+      const next = [...prev];
+      const [item] = next.splice(idx, 1);
+      next.push(item);
+      return next;
+    });
+  }, []);
+
   const handlePositionChange = useCallback((x: number, y: number) => {
     const element = document.elementFromPoint(x, y);
     if (element) {
       const computedStyle = window.getComputedStyle(element);
-      const isClickable =
-        computedStyle.cursor === 'pointer' ||
-        element.tagName === 'BUTTON' ||
-        element.tagName === 'A' ||
-        element.closest('button') !== null ||
-        element.closest('a') !== null;
+      const isClickable = computedStyle.cursor === "pointer" || element.tagName === "BUTTON" || element.tagName === "A" || element.closest("button") !== null || element.closest("a") !== null;
       setIsPointer(isClickable);
     } else {
       setIsPointer(false);
@@ -252,13 +222,13 @@ export default function Home() {
     }, 500);
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    mouseX.set(e.clientX);
-    mouseY.set(e.clientY);
-  }, [mouseX, mouseY]);
-
-
-
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    },
+    [mouseX, mouseY],
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -269,32 +239,21 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8 z-1000 transition-colors duration-500"
-      onMouseMove={handleMouseMove}
-    >
+    <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8 z-1000 transition-colors duration-500" onMouseMove={handleMouseMove}>
+      {/* Background */}
+      <img src="/images/bg.jpg" alt="" draggable={false} className="fixed inset-0 w-full h-full object-cover z-0" />
+      <ProgressiveBlur direction="bottom" blurLayers={10} blurIntensity={1} className="fixed inset-0 z-1" />
       {/*Intro */}
       <AnimatePresence>
         {showIntro && (
-          <motion.div
-            className="fixed inset-0 z-[500] bg-white dark:bg-black flex items-center justify-center transition-colors duration-300"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-          >
-            <AppleHelloEnglishEffect
-              className="h-24 md:h-32 text-black dark:text-white"
-              speed={0.8}
-              onAnimationComplete={handleIntroComplete}
-            />
+          <motion.div className="fixed inset-0 z-500 bg-white dark:bg-black flex items-center justify-center transition-colors duration-300" initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8, ease: "easeInOut" }}>
+            <AppleHelloEnglishEffect className="h-24 md:h-32 text-black dark:text-white" speed={0.8} onAnimationComplete={handleIntroComplete} />
           </motion.div>
         )}
       </AnimatePresence>
 
-
-
       <Cursor
-        className="z-[1000] hidden sm:block"
+        className="z-1000 hidden sm:block"
         variants={{
           initial: { scale: 0.3, opacity: 0 },
           animate: { scale: 1, opacity: 1 },
@@ -307,111 +266,105 @@ export default function Home() {
           ease: "easeInOut",
           duration: 0.15,
         }}
-        onPositionChange={handlePositionChange}
-      >
+        onPositionChange={handlePositionChange}>
         <motion.div
           animate={{
             width: isPointer ? 48 : 16,
             height: isPointer ? 48 : 16,
           }}
           transition={{ duration: 0.15, ease: "easeInOut" }}
-          className="flex items-center justify-center rounded-full bg-black/80 dark:bg-white/80 backdrop-blur-sm mix-blend-difference"
-        >
+          className="flex items-center justify-center rounded-full bg-black/80 dark:bg-white/80 backdrop-blur-sm mix-blend-difference">
           <AnimatePresence>
             {isPointer && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.6 }}
-                className="flex items-center justify-center"
-              >
+              <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }} className="flex items-center justify-center">
                 <ArrowUpRight className="w-5 h-5 text-white dark:text-black" />
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
-      </Cursor >
-      <Fps position="top-right" label="FPS" className="z-[500] text-black dark:text-white hidden sm:block transition-colors duration-300" />
+      </Cursor>
+      <Fps position="top-right" label="FPS" className="z-500 text-black dark:text-white hidden sm:block transition-colors duration-300" />
       {/* Morph Surface*/}
-      <div className="fixed top-[-10px] left-1/2 transform -translate-x-1/2 z-[400]">
+      <div className="fixed top-[-10px] cursor-pointer left-1/2 transform -translate-x-1/2 z-400">
         <MorphSurface
-          triggerLabel="[  ]"
+          triggerLabel=""
+          collapsedWidth={360}
+          isOpen={morphOpen}
+          onOpenChange={setMorphOpen}
           placeholder={t.contactPlaceholder}
           expandedWidth={320}
           expandedHeight={140}
           renderContent={(props) => (
-            <div className="p-2">
+            <div className="flex h-full flex-col p-2">
               <ConversationBar
-                apiKey={process.env.NEXT_PUBLIC_LANGVOICE_API_KEY || "your-api-key-here"}
+                apiKey={process.env.NEXT_PUBLIC_LANGVOICE_API_KEY || ""}
                 voice="echo"
                 language="japanese"
-                onConnect={() => console.log('Connected to LangVoice')}
+                onConnect={() => console.log("Connected to LangVoice")}
                 onDisconnect={() => {
-                  console.log('Disconnected from LangVoice');
-
+                  console.log("Disconnected from LangVoice");
                 }}
-                onMessage={(message) => console.log('Message received:', message)}
-                onSendMessage={(message) => console.log('User sent:', message)}
+                onMessage={(message) => console.log("Message received:", message)}
+                onSendMessage={(message) => console.log("User sent:", message)}
                 onError={(error) => {
-                  console.error('Conversation error:', error);
+                  console.error("Conversation error:", error);
 
-                  if (error.message?.includes('400')) {
-                    console.warn('API key invalid. Using default form instead.');
+                  if (error.message?.includes("400")) {
+                    console.warn("API key invalid. Using default form instead.");
                   }
                 }}
               />
+              <div className="hidden items-center justify-between gap-2 px-3 max-sm:flex">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground">Widgets</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowWidgets((v) => !v)}
+                    className="relative flex h-8 w-16 items-center justify-between rounded-full p-1 transition-colors bg-black/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg shadow-black/1"
+                    aria-label="Toggle widgets">
+                    <span className="absolute left-2.5 text-[10px] font-bold text-neutral-500 dark:text-neutral-400">ON</span>
+                    <span className="absolute right-2.5 text-[10px] font-bold text-neutral-500 dark:text-neutral-400">OFF</span>
+                    <motion.div className="z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm dark:bg-black" animate={{ x: showWidgets ? 32 : 0 }} transition={{ type: "spring", stiffness: 500, damping: 30 }} />
+                  </button>
+                </div>
+                <div className="hidden max-sm:flex">
+                  <LanguageToggle />
+                </div>
+              </div>
             </div>
           )}
           onSubmit={async (data) => {
-            console.log('Contact form submitted:', data.get('message'));
+            console.log("Contact form submitted:", data.get("message"));
           }}
         />
       </div>
       {/* Theme Toggle - Top/Bottom Left */}
-      <div className="fixed bottom-4 left-8 sm:top-4 sm:left-4 z-[1000]">
+      <div className="fixed bottom-4 left-8 sm:top-4 sm:left-4 sm:bottom-auto z-[1000] flex items-center">
         <ThemeToggleButton variant="rectangle" blur={true} start="top-down" />
       </div>
 
-      {/* Language Toggle - Aligned with Dock on Right */}
-      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-[400] flex items-center">
+      {/* Language Toggle - Desktop: Aligned with Dock on Right */}
+      <div className="fixed bottom-6 right-5 sm:bottom-8 sm:right-6 z-[400] hidden sm:flex items-center">
         <LanguageToggle />
       </div>
 
       {/* Expandable Screens */}
-      <AnimatePresence mode="wait">
-        {expandedItem && (
-          <FullPageContainer
-            key={expandedItem.id}
-            item={expandedItem}
-            onClose={() => setExpandedItem(null)}
-          />
+      <AnimatePresence>
+        {openItems.map((item, index) =>
+          item.id === "gallery" ?
+            <ProjectCard key={item.id} onClose={() => closeItem(item.id)} onRaise={() => raiseItem(item.id)} offsetTop={index * 24} />
+          : <FullPageContainer key={item.id} item={item} onClose={() => closeItem(item.id)} onRaise={() => raiseItem(item.id)} index={index} />,
         )}
       </AnimatePresence>
 
-      <DockWithExpandable
-        expandedItem={expandedItem}
-        setExpandedItem={setExpandedItem}
-      />
+      <DockWithExpandable openItems={openItems} onToggle={toggleItem} />
 
       {/* Debug Panel*/}
-      <DebugPanel
-        mouseX={mouseX}
-        mouseY={mouseY}
-        time={time}
-        className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]"
-      />
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-      >
+      <DebugPanel mouseX={mouseX} mouseY={mouseY} time={time} className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]" />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
         <ShimmeringText text={t.hiImA} className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
-        <MorphingText
-          texts={t.roles}
-          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl"
-        />
+        <MorphingText texts={t.roles} className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl" />
       </motion.div>
-
     </div>
   );
 }

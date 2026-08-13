@@ -9,7 +9,6 @@ src/components/screens/
 ├── index.ts              # Export semua screens
 ├── HomeScreen.tsx        # Screen untuk halaman Home
 ├── WorksScreen.tsx       # Screen untuk halaman Works
-├── InfoScreen.tsx        # Screen untuk halaman Info
 ├── ScreenTemplate.tsx    # Template untuk membuat screen baru
 └── README.md            # Dokumentasi ini
 ```
@@ -20,8 +19,7 @@ Setiap expandable screen sekarang menggunakan komponen terpisah yang bisa fully 
 
 1. **HomeScreen**: Landing page dengan hero section dan features
 2. **WorksScreen**: Showcase projects dengan grid layout
-3. **InfoScreen**: About page dengan skills dan contact info
-4. **ScreenTemplate**: Template reusable untuk screen baru
+3. **ScreenTemplate**: Template reusable untuk screen baru
 
 ## 🚀 Cara Membuat Screen Baru
 
@@ -58,7 +56,6 @@ export function MyCustomScreen() {
 // src/components/screens/index.ts
 export { HomeScreen } from './HomeScreen';
 export { WorksScreen } from './WorksScreen';
-export { InfoScreen } from './InfoScreen';
 export { MyCustomScreen } from './MyCustomScreen'; // Tambah export baru
 ```
 
@@ -83,7 +80,6 @@ const dockItems = [
 <ExpandableContent id={item.id}>
   {item.id === "home" && <HomeScreen />}
   {item.id === "works" && <WorksScreen />}
-  {item.id === "info" && <InfoScreen />}
   {item.id === "custom" && <MyCustomScreen />} {/* Tambah kondisi baru */}
 </ExpandableContent>
 ```
@@ -101,12 +97,6 @@ const dockItems = [
 - Hover effects
 - Tech stack badges
 - Responsive layout
-
-### InfoScreen
-- Skills progress bars
-- Fun facts grid
-- Contact section
-- Interactive elements
 
 ### ScreenTemplate
 - Reusable template

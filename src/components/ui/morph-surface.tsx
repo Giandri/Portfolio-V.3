@@ -1,118 +1,108 @@
-"use client"
+"use client";
 
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type RefObject,
-} from "react"
-import { AnimatePresence, motion } from "motion/react"
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 type SpringConfig = {
-  type: "spring"
-  stiffness: number
-  damping: number
-  mass?: number
-  delay?: number
-}
+  type: "spring";
+  stiffness: number;
+  damping: number;
+  mass?: number;
+  delay?: number;
+};
 
-const SPEED = 1
-const FEEDBACK_WIDTH = 360
-const FEEDBACK_HEIGHT = 200
+const SPEED = 1;
+const FEEDBACK_WIDTH = 360;
+const FEEDBACK_HEIGHT = 200;
 
 // Props interfaces
 interface TriggerProps {
-  isOpen: boolean
-  onClick: () => void
-  className?: string
+  isOpen: boolean;
+  onClick: () => void;
+  className?: string;
 }
 
 interface ContentProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (data: FormData) => void | Promise<void>
-  className?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: FormData) => void | Promise<void>;
+  className?: string;
 }
 
 interface IndicatorProps {
-  success: boolean
-  isOpen: boolean
-  className?: string
+  success: boolean;
+  isOpen: boolean;
+  className?: string;
 }
 
 interface MorphSurfaceProps {
   // Dimensions
-  collapsedWidth?: number | "auto"
-  collapsedHeight?: number
-  expandedWidth?: number
-  expandedHeight?: number
+  collapsedWidth?: number | "auto";
+  collapsedHeight?: number;
+  expandedWidth?: number;
+  expandedHeight?: number;
 
   // Animation
-  animationSpeed?: number
-  springConfig?: SpringConfig
+  animationSpeed?: number;
+  springConfig?: SpringConfig;
 
   // Content
-  triggerLabel?: string
-  triggerIcon?: React.ReactNode
-  placeholder?: string
-  submitLabel?: string
+  triggerLabel?: string;
+  triggerIcon?: React.ReactNode;
+  placeholder?: string;
+  submitLabel?: string;
 
   // Callbacks
-  onSubmit?: (data: FormData) => void | Promise<void>
-  onOpen?: () => void
-  onClose?: () => void
-  onSuccess?: () => void
+  onSubmit?: (data: FormData) => void | Promise<void>;
+  onOpen?: () => void;
+  onClose?: () => void;
+  onSuccess?: () => void;
 
   // Controlled state
-  isOpen?: boolean
-  onOpenChange?: (open: boolean) => void
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 
   // Styles
-  className?: string
-  triggerClassName?: string
-  contentClassName?: string
+  className?: string;
+  triggerClassName?: string;
+  contentClassName?: string;
 
   // Render props
-  renderTrigger?: (props: TriggerProps) => React.ReactNode
-  renderContent?: (props: ContentProps) => React.ReactNode
-  renderIndicator?: (props: IndicatorProps) => React.ReactNode
+  renderTrigger?: (props: TriggerProps) => React.ReactNode;
+  renderContent?: (props: ContentProps) => React.ReactNode;
+  renderIndicator?: (props: IndicatorProps) => React.ReactNode;
 }
 
 interface MorphSurfaceContextValue {
-  showFeedback: boolean
-  success: boolean
-  openFeedback: () => void
-  closeFeedback: () => void
+  showFeedback: boolean;
+  success: boolean;
+  openFeedback: () => void;
+  closeFeedback: () => void;
   // Configurable props
-  triggerLabel: string
-  triggerIcon?: React.ReactNode
-  placeholder: string
-  submitLabel: string
-  onSubmit?: (data: FormData) => void | Promise<void>
-  onOpen?: () => void
-  onClose?: () => void
-  onSuccess?: () => void
-  triggerClassName?: string
-  contentClassName?: string
-  renderTrigger?: (props: TriggerProps) => React.ReactNode
-  renderContent?: (props: ContentProps) => React.ReactNode
-  renderIndicator?: (props: IndicatorProps) => React.ReactNode
-  animationSpeed: number
-  springConfig?: SpringConfig
-  expandedWidth: number
-  expandedHeight: number
+  triggerLabel: string;
+  triggerIcon?: React.ReactNode;
+  placeholder: string;
+  submitLabel: string;
+  onSubmit?: (data: FormData) => void | Promise<void>;
+  onOpen?: () => void;
+  onClose?: () => void;
+  onSuccess?: () => void;
+  triggerClassName?: string;
+  contentClassName?: string;
+  renderTrigger?: (props: TriggerProps) => React.ReactNode;
+  renderContent?: (props: ContentProps) => React.ReactNode;
+  renderIndicator?: (props: IndicatorProps) => React.ReactNode;
+  animationSpeed: number;
+  springConfig?: SpringConfig;
+  expandedWidth: number;
+  expandedHeight: number;
 }
 
-const MorphSurfaceContext = createContext<MorphSurfaceContextValue>(
-  {} as MorphSurfaceContextValue
-)
+const MorphSurfaceContext = createContext<MorphSurfaceContextValue>({} as MorphSurfaceContextValue);
 
-const useMorphSurface = () => useContext(MorphSurfaceContext)
+const useMorphSurface = () => useContext(MorphSurfaceContext);
 
 // Internal hook logic
 function useMorphSurfaceLogic({
@@ -123,46 +113,45 @@ function useMorphSurfaceLogic({
   collapsedHeight = 44,
   animationSpeed = SPEED,
 }: {
-  isOpen?: boolean
-  onOpenChange?: (open: boolean) => void
-  expandedWidth?: number
-  expandedHeight?: number
-  collapsedHeight?: number
-  animationSpeed?: number
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  expandedWidth?: number;
+  expandedHeight?: number;
+  collapsedHeight?: number;
+  animationSpeed?: number;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement | null>(null)
-  const [internalIsOpen, setInternalIsOpen] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const isOpen =
-    controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen
-  const showFeedback = isOpen
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const showFeedback = isOpen;
 
   function closeFeedback() {
     if (controlledIsOpen !== undefined) {
-      onOpenChange?.(false)
+      onOpenChange?.(false);
     } else {
-      setInternalIsOpen(false)
+      setInternalIsOpen(false);
     }
-    inputRef.current?.blur()
+    inputRef.current?.blur();
   }
 
   function openFeedback() {
     if (controlledIsOpen !== undefined) {
-      onOpenChange?.(true)
+      onOpenChange?.(true);
     } else {
-      setInternalIsOpen((prev) => !prev)
+      setInternalIsOpen((prev) => !prev);
     }
     if (!showFeedback) {
       setTimeout(() => {
-        inputRef.current?.focus()
-      })
+        inputRef.current?.focus();
+      });
     }
   }
 
   function setSuccessState(value: boolean) {
-    setSuccess(value)
+    setSuccess(value);
   }
 
   return {
@@ -177,7 +166,7 @@ function useMorphSurfaceLogic({
     expandedHeight,
     collapsedHeight,
     animationSpeed,
-  }
+  };
 }
 
 // Root component
@@ -212,31 +201,20 @@ export function MorphSurface({
     expandedHeight,
     collapsedHeight,
     animationSpeed,
-  })
+  });
 
-  const {
-    containerRef,
-    inputRef,
-    showFeedback,
-    success,
-    openFeedback,
-    closeFeedback,
-    setSuccess,
-    expandedWidth: hookExpandedWidth,
-    expandedHeight: hookExpandedHeight,
-    collapsedHeight: hookCollapsedHeight,
-  } = hookLogic
+  const { containerRef, inputRef, showFeedback, success, openFeedback, closeFeedback, setSuccess, expandedWidth: hookExpandedWidth, expandedHeight: hookExpandedHeight, collapsedHeight: hookCollapsedHeight } = hookLogic;
 
   // Handle click outside to close morph
-  useClickOutsideMorphSurface(containerRef, showFeedback, closeFeedback)
+  useClickOutsideMorphSurface(containerRef, showFeedback, closeFeedback);
 
   function onFeedbackSuccess() {
-    closeFeedback()
-    setSuccess(true)
+    closeFeedback();
+    setSuccess(true);
     setTimeout(() => {
-      setSuccess(false)
-    }, 1500)
-    onSuccess?.()
+      setSuccess(false);
+    }, 1500);
+    onSuccess?.();
   }
 
   const context = useMemo(
@@ -244,12 +222,12 @@ export function MorphSurface({
       showFeedback,
       success,
       openFeedback: () => {
-        openFeedback()
-        onOpen?.()
+        openFeedback();
+        onOpen?.();
       },
       closeFeedback: () => {
-        closeFeedback()
-        onClose?.()
+        closeFeedback();
+        onClose?.();
       },
       triggerLabel,
       triggerIcon,
@@ -291,24 +269,23 @@ export function MorphSurface({
       springConfig,
       hookExpandedWidth,
       hookExpandedHeight,
-    ]
-  )
+    ],
+  );
 
   return (
     <div
-      className={cn("flex justify-center items-start", className)}
+      className={cn("flex justify-center items-start", !showFeedback && "cursor-pointer", className)}
       style={{
         width: hookExpandedWidth,
         height: hookExpandedHeight,
-      }}
-    >
+      }}>
       {/* Invisible trigger area for opening morph */}
       {!showFeedback && (
         <div
           className="absolute inset-0 cursor-pointer"
           onClick={(e) => {
-            e.stopPropagation()
-            openFeedback()
+            e.stopPropagation();
+            openFeedback();
           }}
         />
       )}
@@ -317,15 +294,16 @@ export function MorphSurface({
         ref={containerRef}
         onClick={(e) => {
           // Prevent event propagation to avoid conflicts with inner elements
-          e.stopPropagation()
+          e.stopPropagation();
+          if (!showFeedback) openFeedback();
         }}
         className={cn(
           "relative flex flex-col items-center top-6 z-10 overflow-hidden",
           "bg-card dark:bg-muted",
-          "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]",
-          "dark:shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)]",
-          !showFeedback &&
-          "cursor-pointer hover:brightness-105 transition-[filter] duration-200"
+          "bg-black/20 dark:bg-white/10 backdrop-blur-xl",
+          "border border-white/20 dark:border-white/10",
+          "shadow-lg shadow-black/10",
+          !showFeedback && "cursor-pointer hover:brightness-105 transition-[filter] duration-200",
         )}
         initial={false}
         animate={{
@@ -341,59 +319,42 @@ export function MorphSurface({
             mass: 0.7,
             delay: showFeedback ? 0 : 0.08,
           }
-        }
-      >
+        }>
         <MorphSurfaceContext.Provider value={context}>
           <MorphSurfaceDock />
           <MorphSurfaceFeedback ref={inputRef} onSuccess={onFeedbackSuccess} />
         </MorphSurfaceContext.Provider>
       </motion.div>
     </div>
-  )
+  );
 }
 
 // Dock component
 function MorphSurfaceDock() {
-  const {
-    success,
-    showFeedback,
-    openFeedback,
-    triggerLabel,
-    triggerIcon,
-    triggerClassName,
-    renderTrigger,
-    renderIndicator,
-    animationSpeed,
-    springConfig,
-  } = useMorphSurface()
+  const { success, showFeedback, openFeedback, triggerLabel, triggerIcon, triggerClassName, renderTrigger, renderIndicator, animationSpeed, springConfig } = useMorphSurface();
 
   const logoSpring = springConfig || {
     type: "spring" as const,
     stiffness: 350 / animationSpeed,
     damping: 35,
-  }
+  };
 
   const checkSpring = {
     type: "spring" as const,
     stiffness: 500 / animationSpeed,
     damping: 22,
-  }
+  };
 
   const handleTriggerClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    openFeedback()
-  }
+    e.stopPropagation();
+    openFeedback();
+  };
 
   const defaultIndicator = (
     <>
-      {showFeedback ? (
+      {showFeedback ?
         <div className="w-5 h-5" style={{ opacity: 0 }} />
-      ) : (
-        <motion.div
-          className="w-5 h-5 bg-primary rounded-full"
-          layoutId={`morph-surface-dot-${triggerLabel}`}
-          transition={logoSpring}
-        >
+      : <motion.div className="w-5 h-5 bg-primary cursor-pointer rounded-full" layoutId={`morph-surface-dot-${triggerLabel}`} transition={logoSpring}>
           <AnimatePresence>
             {success && (
               <motion.div
@@ -405,16 +366,15 @@ function MorphSurfaceDock() {
                   ...checkSpring,
                   delay: success ? 0.3 : 0,
                 }}
-                className="m-[2px]"
-              >
+                className="m-[2px]">
                 <IconCheck />
               </motion.div>
             )}
           </AnimatePresence>
         </motion.div>
-      )}
+      }
     </>
-  )
+  );
 
   const defaultTrigger = (
     <button
@@ -424,32 +384,33 @@ function MorphSurfaceDock() {
         "text-muted-foreground hover:text-foreground",
         "transition-colors duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        triggerClassName
+        triggerClassName,
       )}
-      onClick={handleTriggerClick}
-    >
+      onClick={handleTriggerClick}>
       {triggerIcon && <span className="flex items-center">{triggerIcon}</span>}
       <span className="ml-1 max-w-[20ch] truncate">{triggerLabel}</span>
     </button>
-  )
+  );
 
-  const indicatorElement = renderIndicator
-    ? renderIndicator({
-      success,
-      isOpen: showFeedback,
-    })
-    : defaultIndicator
+  const indicatorElement =
+    renderIndicator ?
+      renderIndicator({
+        success,
+        isOpen: showFeedback,
+      })
+    : defaultIndicator;
 
-  const triggerElement = renderTrigger
-    ? renderTrigger({
-      isOpen: showFeedback,
-      onClick: () => openFeedback(),
-      className: triggerClassName,
-    })
-    : defaultTrigger
+  const triggerElement =
+    renderTrigger ?
+      renderTrigger({
+        isOpen: showFeedback,
+        onClick: () => openFeedback(),
+        className: triggerClassName,
+      })
+    : defaultTrigger;
 
   return (
-    <footer className="flex items-center justify-center select-none whitespace-nowrap mt-auto h-[44px]">
+    <footer className="flex items-center justify-center select-none whitespace-nowrap mt-auto h-[44px] cursor-pointer">
       <div className="flex items-center justify-center gap-6 px-3">
         <div className="flex items-center gap-2 w-fit">
           {indicatorElement}
@@ -459,73 +420,57 @@ function MorphSurfaceDock() {
         {!showFeedback && triggerElement}
       </div>
     </footer>
-  )
+  );
 }
 
 // Feedback component
-const MorphSurfaceFeedback = React.forwardRef<
-  HTMLTextAreaElement,
-  { onSuccess: () => void }
->(({ onSuccess }, ref) => {
-  const {
-    closeFeedback,
-    showFeedback,
-    placeholder,
-    onSubmit,
-    contentClassName,
-    renderContent,
-    expandedWidth,
-    expandedHeight,
-    animationSpeed,
-    triggerLabel,
-  } = useMorphSurface()
-  const submitRef = React.useRef<HTMLButtonElement>(null)
+const MorphSurfaceFeedback = React.forwardRef<HTMLTextAreaElement, { onSuccess: () => void }>(({ onSuccess }, ref) => {
+  const { closeFeedback, showFeedback, placeholder, onSubmit, contentClassName, renderContent, expandedWidth, expandedHeight, animationSpeed, triggerLabel } = useMorphSurface();
+  const submitRef = React.useRef<HTMLButtonElement>(null);
 
   const contentSpring = {
     type: "spring" as const,
     stiffness: 550 / animationSpeed,
     damping: 45,
     mass: 0.7,
-  }
+  };
 
   const logoSpring = {
     type: "spring" as const,
     stiffness: 350 / animationSpeed,
     damping: 35,
-  }
+  };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
     if (onSubmit) {
       try {
-        await onSubmit(formData)
-        onSuccess()
+        await onSubmit(formData);
+        onSuccess();
       } catch (error) {
-        console.error("Form submission error:", error)
+        console.error("Form submission error:", error);
       }
     } else {
-      onSuccess()
+      onSuccess();
     }
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Escape") {
-      closeFeedback()
+      closeFeedback();
     }
     if (e.key === "Enter" && e.metaKey) {
-      e.preventDefault()
-      submitRef.current?.click()
+      e.preventDefault();
+      submitRef.current?.click();
     }
   }
 
   const defaultContent = (
     <>
       <div className="flex justify-between py-1">
-        <p className="flex gap-[2px] text-sm items-center text-muted-foreground select-none z-[2] ml-[25px]">
-          Feedback
-        </p>
+        <p className="flex gap-[2px] text-sm items-center text-muted-foreground select-none z-[2] ml-[25px]">Feedback</p>
         <button
           type="submit"
           ref={submitRef}
@@ -533,9 +478,8 @@ const MorphSurfaceFeedback = React.forwardRef<
             "mt-1 flex items-center justify-center gap-1 text-sm -translate-y-[3px]",
             "text-muted-foreground right-4 text-center bg-transparent select-none",
             "rounded-xl cursor-pointer pr-1",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          )}
-        >
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          )}>
           <Kbd>⌘</Kbd>
           <Kbd className="w-fit">Enter</Kbd>
         </button>
@@ -549,36 +493,37 @@ const MorphSurfaceFeedback = React.forwardRef<
           "bg-muted dark:bg-accent rounded-xl",
           "caret-primary",
           "placeholder:text-muted-foreground",
-          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
         )}
         required
         onKeyDown={onKeyDown}
         spellCheck={false}
       />
     </>
-  )
+  );
 
   const handleContentSubmit = async (data: FormData) => {
     if (onSubmit) {
       try {
-        await onSubmit(data)
-        onSuccess()
+        await onSubmit(data);
+        onSuccess();
       } catch (error) {
-        console.error("Form submission error:", error)
+        console.error("Form submission error:", error);
       }
     } else {
-      onSuccess()
+      onSuccess();
     }
-  }
+  };
 
-  const contentElement = renderContent
-    ? renderContent({
-      isOpen: showFeedback,
-      onClose: closeFeedback,
-      onSubmit: handleContentSubmit,
-      className: contentClassName,
-    })
-    : defaultContent
+  const contentElement =
+    renderContent ?
+      renderContent({
+        isOpen: showFeedback,
+        onClose: closeFeedback,
+        onSubmit: handleContentSubmit,
+        className: contentClassName,
+      })
+    : defaultContent;
 
   return (
     <form
@@ -588,96 +533,49 @@ const MorphSurfaceFeedback = React.forwardRef<
         width: expandedWidth,
         height: expandedHeight,
         pointerEvents: showFeedback ? "all" : "none",
-      }}
-    >
+      }}>
       <AnimatePresence>
         {showFeedback && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={contentSpring}
-            className="p-1 flex flex-col h-full"
-            onClick={(e) => e.stopPropagation()} // Prevent clicks from bubbling up
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={contentSpring} className="p-1 flex flex-col h-full" onClick={(e) => e.stopPropagation()}>
             {contentElement}
           </motion.div>
         )}
       </AnimatePresence>
-      {showFeedback && (
-        <motion.div
-          layoutId={`morph-surface-dot-${triggerLabel}`}
-          className="w-2 h-2 bg-primary rounded-full absolute top-[18.5px] left-4"
-          transition={logoSpring}
-        />
-      )}
+      {showFeedback && <motion.div layoutId={`morph-surface-dot-${triggerLabel}`} className="w-2 h-2 bg-primary pointer-events-auto rounded-full absolute top-[18.5px] left-4" transition={logoSpring} />}
     </form>
-  )
-})
+  );
+});
 
-MorphSurfaceFeedback.displayName = "MorphSurfaceFeedback"
+MorphSurfaceFeedback.displayName = "MorphSurfaceFeedback";
 
 // Click outside handler for MorphSurface
-function useClickOutsideMorphSurface(
-  ref: RefObject<HTMLDivElement | null>,
-  showFeedback: boolean,
-  closeFeedback: () => void
-) {
+function useClickOutsideMorphSurface(ref: RefObject<HTMLDivElement | null>, showFeedback: boolean, closeFeedback: () => void) {
   React.useEffect(() => {
-    if (!showFeedback) return
+    if (!showFeedback) return;
 
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
-        closeFeedback()
+        closeFeedback();
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [ref, showFeedback, closeFeedback])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, showFeedback, closeFeedback]);
 }
 
 // Utility components
 function IconCheck() {
   return (
-    <svg
-      width="16px"
-      height="16px"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      color="white"
-    >
+    <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="white">
       <title>Icon Check</title>
-      <path
-        d="M5 13L9 17L19 7"
-        stroke="currentColor"
-        strokeWidth="2px"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="2px" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
+  );
 }
 
-function Kbd({
-  children,
-  className,
-}: {
-  children: string
-  className?: string
-}) {
-  return (
-    <kbd
-      className={cn(
-        "w-6 h-6 bg-muted text-muted-foreground rounded flex items-center justify-center font-sans px-[6px] text-xs",
-        className
-      )}
-    >
-      {children}
-    </kbd>
-  )
+function Kbd({ children, className }: { children: string; className?: string }) {
+  return <kbd className={cn("w-6 h-6 bg-muted text-muted-foreground rounded flex items-center justify-center font-sans px-[6px] text-xs", className)}>{children}</kbd>;
 }
-

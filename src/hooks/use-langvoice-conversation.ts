@@ -199,8 +199,9 @@ export function useLangVoiceConversation(config: LangVoiceConfig): LangVoiceConv
             }
 
             recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
-                // Ignore "no-speech" - it's normal when user is silent
-                if (event.error !== "no-speech" && event.error !== "aborted") {
+                // Ignore transient errors - "no-speech" when user is silent,
+                // "aborted" on manual stop, "network" when the speech service is unreachable
+                if (event.error !== "no-speech" && event.error !== "aborted" && event.error !== "network") {
                     console.error("Speech recognition error:", event.error)
                     configRef.current.onError?.(new Error(`Speech recognition error: ${event.error}`))
                 }
