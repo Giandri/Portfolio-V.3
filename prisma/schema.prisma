@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
+/// Kolom `Json` bertipe `Localized` (lihat src/lib/validations/localized.ts).
+/// Isi dengan `pickLocalized`/`pickLocalizedList` saat membacanya.
+
+model Profile {
+  id              String   @id @default("singleton")
+  name            String
+  headline        Json // Localized
+  roles           Json // LocalizedList
+  location        Json? // Localized
+  longBio         Json? // Localized
+  publicEmail     String?
+  resumeUrl       String?
+  resumeFileName  String?
+  avatarUrl       String?
+  greetingOpening Json? // Localized, mis. "dear visitor,"
+  greetingClosing Json? // Localized, mis. "warmly,"
+  ctaLabel        Json? // Localized, mis. "Get in touch"
+  updatedAt       DateTime @updatedAt
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  title     Json // Localized
+  summary   Json // Localized
+  videoUrl  String?
+  demoUrl   String?
+  status    Status   @default(DRAFT)
+  order     Int      @default(0)
+  skills    Skill[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  order    Int       @default(0)
+  projects Project[]
+}
+
+model Experience {
+  id      String @id @default(cuid())
+  company String
+  role    Json // Localized
+  period  Json // Localized
+  bullets Json // LocalizedList
+  order   Int    @default(0)
+}
+
+model SiteSetting {
+  id          String @id @default("singleton")
+  siteTitle   String
+  description Json? // Localized
+}

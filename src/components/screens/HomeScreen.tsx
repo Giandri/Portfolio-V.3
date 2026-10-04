@@ -9,6 +9,7 @@ import { CometCard } from "@/components/ui/comet-card";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { ShareButton } from "@/components/animate-ui/components/community/share-button";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { FileSystem, FileSystemItem } from "@/components/ui/file-system";
 
 const tabs = [
   { id: "about", label: "About me", count: "01" },
