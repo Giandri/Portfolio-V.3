@@ -4,10 +4,7 @@ import { useThemeToggle } from "@/hooks/use-theme-toggle";
 
 // Dark or Light mode only
 const CustomToggle2 = () => {
-  const { setCrazyDarkTheme, setCrazyLightTheme, isDark } = useThemeToggle({
-    variant: "rectangle",
-    start: "bottom-up",
-  });
+  const { setCrazyDarkTheme, setCrazyLightTheme, isDark } = useThemeToggle();
 
   return (
     <div className="flex gap-2">

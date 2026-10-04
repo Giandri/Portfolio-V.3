@@ -4,6 +4,7 @@ import { ArrowDownToLine, FileText, Menu, X } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLanguage } from "@/context/language-provider";
+import { pickLocalized } from "@/lib/i18n-content";
 import { PDFViewer } from "@/components/ui/pdf-viewer";
 import { CometCard } from "@/components/ui/comet-card";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
@@ -20,7 +21,14 @@ const tabs = [
 type TabId = (typeof tabs)[number]["id"];
 
 export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onActivate?: () => void }) {
-  const { t } = useLanguage();
+  const { language, content } = useLanguage();
+  const bio = pickLocalized(content.profile?.longBio, language);
+  const skills = content.skills.map((skill) => skill.name);
+  const experiences = content.experiences.map((item) => ({
+    title: pickLocalized(item.role, language),
+    org: item.company,
+    period: pickLocalized(item.period, language),
+  }));
   const [active, setActive] = useState<TabId>("about");
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isHover, setIsHover] = useState(false);
@@ -135,10 +143,10 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
           <main className="flex-1 overflow-y-auto scrollbar-none bg-transparent border-l border-white/25 dark:border-black/25 p-4 sm:p-6">
             {active === "about" && (
               <div className="text-xs font-medium tracking-[-0.04em] leading-[1.1]">
-                <p className="text-white text-justify dark:text-black">{t.bioP1}</p>
+                <p className="text-white text-justify dark:text-black">{bio}</p>
                 <p className="mt-4 text-white dark:text-black">Technical Skills</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {t.techStack.map((tech) => (
+                  {skills.map((tech) => (
                     <StatusBadge key={tech} status="success" leftIcon={tech} leftLabel={tech} />
                   ))}
                 </div>
@@ -148,7 +156,7 @@ export function HomeScreen({ onClose, onActivate }: { onClose?: () => void; onAc
             {active === "exp" && (
               <div className="text-xs font-medium tracking-[-0.04em] leading-[1.1]">
                 <ul className="mt-4 space-y-5">
-                  {t.experience.map((item) => (
+                  {experiences.map((item) => (
                     <li key={item.title}>
                       <div className="flex items-start justify-between gap-4">
                         <div>

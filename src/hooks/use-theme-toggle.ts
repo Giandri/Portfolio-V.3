@@ -1,22 +1,12 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
-interface UseThemeToggleOptions {
-  variant?: "rectangle" | "circle";
-  start?: "top-down" | "bottom-up" | "left-right" | "right-left";
-}
-
-export function useThemeToggle(options: UseThemeToggleOptions = {}) {
+export function useThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [isDark, setIsDark] = useState(false);
+  const isDark = theme === "dark";
   const [isAnimating, setIsAnimating] = useState(false);
-
-  // Update isDark state when theme changes
-  useEffect(() => {
-    setIsDark(theme === "dark");
-  }, [theme]);
 
   // Crazy animation effect
   const triggerCrazyAnimation = useCallback(() => {

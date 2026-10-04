@@ -1,44 +1,50 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { en } from "@/locales/en";
-import { id } from "@/locales/id";
-
-type Language = "en" | "id";
-type Dictionary = typeof en;
+import React, { createContext, useCallback, useContext, useSyncExternalStore } from "react";
+import type { SiteContent } from "@/lib/content";
+import type { Language } from "@/lib/validations/localized";
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: Dictionary;
+  content: SiteContent;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+const STORAGE_KEY = "language";
+const CHANGE_EVENT = "portfolio:language-change";
 
-  useEffect(() => {
-    const saved = localStorage.getItem("language") as Language;
-    if (saved && (saved === "en" || saved === "id")) {
-      setLanguageState(saved);
-    } else {
-      const browserLang = navigator.language.toLowerCase();
-      if (browserLang.includes("id")) {
-        setLanguageState("id");
-      }
-    }
+function isLanguage(value: unknown): value is Language {
+  return value === "en" || value === "id";
+}
+
+function detectLanguage(): Language {
+  if (typeof navigator === "undefined") return "en";
+  return navigator.language.toLowerCase().includes("id") ? "id" : "en";
+}
+
+function getSnapshot(): Language {
+  if (typeof window === "undefined") return "en";
+  const saved = window.localStorage.getItem(STORAGE_KEY);
+  return isLanguage(saved) ? saved : detectLanguage();
+}
+
+function subscribe(onStoreChange: () => void) {
+  window.addEventListener(CHANGE_EVENT, onStoreChange);
+  return () => window.removeEventListener(CHANGE_EVENT, onStoreChange);
+}
+
+export function LanguageProvider({ children, content }: { children: React.ReactNode; content: SiteContent }) {
+  const language = useSyncExternalStore(subscribe, getSnapshot, (): Language => "en");
+
+  const setLanguage = useCallback((lang: Language) => {
+    window.localStorage.setItem(STORAGE_KEY, lang);
+    window.dispatchEvent(new Event(CHANGE_EVENT));
   }, []);
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem("language", lang);
-  };
-
-  const t = language === "en" ? en : id;
-
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, content }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -4,6 +4,11 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { LenisProvider } from "@/components/lenis-provider";
 import { LanguageProvider } from "@/context/language-provider";
+import { getSiteContent } from "@/lib/content";
+
+// Konten datang dari database, jadi halaman harus dirender per-request agar
+// perubahan dari dashboard admin langsung terlihat.
+export const dynamic = "force-dynamic";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,11 +25,13 @@ export const metadata: Metadata = {
   description: "-",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const content = await getSiteContent();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -49,7 +56,7 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
         >
-          <LanguageProvider>
+          <LanguageProvider content={content}>
             {children}
           </LanguageProvider>
         </ThemeProvider>

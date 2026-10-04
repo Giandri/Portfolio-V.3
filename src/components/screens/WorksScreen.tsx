@@ -4,43 +4,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { Skiper67 } from "../ui/skiper-ui/skiper67";
 import { useLanguage } from "@/context/language-provider";
-
-const projectsBase = [
-  {
-    videoSrc: "https://assets.giandri.my.id/loggs-map.mp4",
-    title: "Loggs Maps",
-    techStack: ["React", "Next.js", "TailwindCSS", "Node.js", "PostgreSQL", "Prisma", "Leaflet"],
-    id: "loggsMaps",
-    link: "https://maps.loggsvisual.com",
-  },
-  {
-    videoSrc: "https://assets.giandri.my.id/loggs.mp4",
-    title: "Loggs Visual Profile",
-    techStack: ["Next.js", "TailwindCSS", "Framer Motion", "Shadcn UI"],
-    id: "loggsVisual",
-    link: "https://www.loggsvisual.com",
-  },
-  {
-    videoSrc: "https://assets.giandri.my.id/portal-bwsbabel.mp4",
-    title: "Service Public Portal BWS Babel",
-    techStack: ["Next.js", "TailwindCSS", "Node.js", "Axios", "Typescript", "PostgreSQL", "Prisma"],
-    id: "bwsPortal",
-    link: "https://portal-pelayanan-publik.vercel.app",
-  },
-  {
-    videoSrc: "https://assets.giandri.my.id/absen-bws.mp4",
-    title: " Attendance Management BWS Babel",
-    techStack: ["Next.js", "TailwindCSS", "Typescript", "PostgreSQL", "Axios", "TanStack", "Shadcn UI", "Leaflet"],
-    id: "absenBws",
-  },
-  {
-    videoSrc: "https://assets.giandri.my.id/ptbsm1.mp4",
-    title: "PT.BSM",
-    techStack: ["Next.js", "TailwindCSS", "Typescript", "Shadcn UI", "Framer Motion"],
-    id: "ptBsm",
-    link: "https://bsmbabel.vercel.app",
-  },
-];
+import { pickLocalized } from "@/lib/i18n-content";
 
 function useVideoAspect(src: string) {
   const [aspect, setAspect] = useState<string | undefined>();
@@ -58,11 +22,15 @@ function useVideoAspect(src: string) {
 }
 
 export function WorksScreen({ onClose, onActivate }: { onClose: () => void; onActivate?: () => void }) {
-  const { t } = useLanguage();
+  const { language, content } = useLanguage();
 
-  const projects = projectsBase.map((p) => ({
-    ...p,
-    description: t.projects[p.id as keyof typeof t.projects],
+  const projects = content.projects.map((p) => ({
+    id: p.id,
+    videoSrc: p.videoUrl ?? "",
+    title: pickLocalized(p.title, language),
+    description: pickLocalized(p.summary, language),
+    techStack: p.skills.map((skill) => skill.name),
+    link: p.demoUrl ?? undefined,
   }));
 
   return (

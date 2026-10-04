@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { X, ArrowUpRight } from "lucide-react";
-import { AnimatePresence, motion, time } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { Dock, DockCard, DockCardInner, DockDivider } from "@/components/ui/dock";
 import { Fps } from "@/components/ui/fps";
 import { Cursor } from "@/components/ui/cursor";
@@ -19,9 +19,23 @@ import { MorphSurface } from "@/components/ui/morph-surface";
 import { ConversationBar } from "@/components/ui/conversation-bar";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { useLanguage } from "@/context/language-provider";
+import { pickLocalizedList } from "@/lib/i18n-content";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ProjectCard } from "@/components/ui/project-card";
+
+// String antarmuka yang tidak dikelola lewat database. Konten (bio, roles, project,
+// experience) semuanya dibaca dari DB lewat pickLocalized.
+const UI_STRINGS = {
+  en: {
+    hiImA: "[ hi,i'm a ]",
+    contactPlaceholder: "Let's work together! Share your project ideas...",
+  },
+  id: {
+    hiImA: "[ hai, saya seorang ]",
+    contactPlaceholder: "Mari bekerja sama! Bagikan ide proyek Anda...",
+  },
+} as const;
 
 const dockItems = [
   {
@@ -145,7 +159,11 @@ function DockWithExpandable({ openItems, onToggle }: { openItems: (typeof dockIt
 }
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { language, content } = useLanguage();
+  const strings = UI_STRINGS[language];
+  // MorphingText membagi modulo dengan panjang array, jadi jangan pernah kosong.
+  const roles = pickLocalizedList(content.profile?.roles, language);
+  const roleTexts = roles.length ? roles : [""];
   const [isPointer, setIsPointer] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const mouseX = useMotionValue(0);
@@ -153,11 +171,13 @@ export default function Home() {
   const [time, setTime] = useState("");
 
   useEffect(() => {
-    setTime(new Date().toLocaleTimeString());
-    const timer = setInterval(() => {
-      setTime(new Date().toLocaleTimeString());
-    }, 1000);
-    return () => clearInterval(timer);
+    const tick = () => setTime(new Date().toLocaleTimeString());
+    const timer = window.setInterval(tick, 1000);
+    const initial = window.setTimeout(tick, 0);
+    return () => {
+      window.clearInterval(timer);
+      window.clearTimeout(initial);
+    };
   }, []);
 
   const [keyPressed, setKeyPressed] = useState("");
@@ -288,7 +308,7 @@ export default function Home() {
           collapsedWidth={360}
           isOpen={morphOpen}
           onOpenChange={setMorphOpen}
-          placeholder={t.contactPlaceholder}
+          placeholder={strings.contactPlaceholder}
           expandedWidth={320}
           expandedHeight={140}
           renderContent={(props) => (
@@ -350,8 +370,8 @@ export default function Home() {
       {/* Debug Panel*/}
       <DebugPanel mouseX={mouseX} mouseY={mouseY} time={time} className="fixed hidden lg:block bottom-4 left-4 lg:bottom-20 lg:left-20 z-[400]" />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
-        <ShimmeringText text={t.hiImA} className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
-        <MorphingText texts={t.roles} className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl" />
+        <ShimmeringText text={strings.hiImA} className="fixed top-[calc(50%-3.5rem)] sm:top-[calc(50%-4.5rem)] lg:top-[calc(50%-6rem)] left-1/2 transform -translate-x-1/2 z-[10] font-mono text-white dark:text-black text-sm sm:text-xl" />
+        <MorphingText texts={roleTexts} className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 z-[10] text-5xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl" />
       </motion.div>
     </div>
   );
