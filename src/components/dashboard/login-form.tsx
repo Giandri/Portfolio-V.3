@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { Panel } from "@/components/dashboard/panel";
+import { StatusBadge } from "@/components/dashboard/status-badge";
 import { authClient } from "@/lib/auth-client";
 
 const ACCESS_DENIED_MESSAGES: Record<string, string> = {
@@ -43,34 +46,61 @@ export function LoginForm({ error, next, allowlistConfigured }: { error?: string
   }
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-6">
+    <div className="flex flex-1 items-center justify-center px-4 py-10">
       <main className="w-full max-w-sm">
-        <h1 className="text-3xl font-semibold tracking-tight">Portfolio CMS</h1>
-        <p className="mt-2 text-[17px]/-tracking-tight text-muted-foreground">Masuk untuk mengelola konten portfolio.</p>
-
-        {error ?
-          <p role="alert" className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-            {ACCESS_DENIED_MESSAGES[error] ?? "Gagal masuk. Periksa konfigurasi OAuth lalu coba lagi."}
+        <Panel>
+          <h1 className="text-xl leading-tight font-semibold">Portfolio Dashboard</h1>
+          <p className="mt-2 max-w-[72ch] text-sm text-muted-foreground">
+            Kelola konten portfolio dari satu tempat.
           </p>
-        : null}
 
-        {!allowlistConfigured ?
-          <p className="mt-6 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-700 dark:text-amber-400">ADMIN_EMAILS kosong, jadi semua login akan ditolak.</p>
-        : null}
+          {error ? (
+            <div role="alert" className="mt-4">
+              <StatusBadge tone="danger">
+                {ACCESS_DENIED_MESSAGES[error] ??
+                  "Gagal masuk. Periksa konfigurasi OAuth lalu coba lagi."}
+              </StatusBadge>
+            </div>
+          ) : null}
 
-        <div className="mt-8 flex flex-col gap-3">
-          <Button type="button" variant="outline" className="h-11 w-full rounded-full" disabled={pending !== null} onClick={() => void signIn("google")}>
-            <GoogleMark />
-            {pending === "google" ? "Menghubungkan…" : "Masuk dengan Google"}
-          </Button>
+          {!allowlistConfigured ? (
+            <div className="mt-4">
+              <StatusBadge tone="warning">
+                Email kosong, jadi semua login ditolak.
+              </StatusBadge>
+            </div>
+          ) : null}
 
-          <Button type="button" variant="outline" className="h-11 w-full rounded-full" disabled={pending !== null} onClick={() => void signIn("github")}>
-            <GitHubMark />
-            {pending === "github" ? "Menghubungkan…" : "Masuk dengan GitHub"}
-          </Button>
-        </div>
+          <div className="mt-6 flex flex-col gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-8 w-full justify-center rounded-sm border-border-strong px-3"
+              disabled={pending !== null}
+              onClick={() => void signIn("google")}
+            >
+              <GoogleMark />
+              {pending === "google" ? "Menghubungkan…" : "Masuk dengan Google"}
+            </Button>
 
-        <p className="mt-4 text-sm flex justify-center text-muted-foreground">Hanya pemilik yang bisa masuk.</p>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-8 w-full justify-center rounded-sm border-border-strong px-3"
+              disabled={pending !== null}
+              onClick={() => void signIn("github")}
+            >
+              <GitHubMark />
+              {pending === "github" ? "Menghubungkan…" : "Masuk dengan GitHub"}
+            </Button>
+          </div>
+
+          <p className="mt-4 text-xs text-faint">
+            Yang tidak berkepentingan{" "}
+            <code className="rounded-sm bg-muted px-1 py-0.5">DILARANG_MASUK</code>,
+            tanpa terkecuali.
+          </p>
+        </Panel>
       </main>
     </div>
   );

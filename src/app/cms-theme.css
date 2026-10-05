@@ -1,0 +1,171 @@
+
+.cms-scope {
+  /* surface */
+  --background: #fdfcfc; /* --bg */
+  --card: #f8f7f7; /* --surface */
+  --popover: #f8f7f7;
+  --muted: #f1eeee; /* --surface-2 */
+  --secondary: #f1eeee;
+  --accent: #f1eeee;
+
+  /* teks */
+  --foreground: #201d1d; /* --text */
+  --text-faint: #9b9595;
+  --card-foreground: #201d1d;
+  --popover-foreground: #201d1d;
+  --muted-foreground: #6f6a6a; /* --text-muted */
+
+  /* border */
+  --border: #d8d4d4; /* --border */
+  --border-strong: #b7b1b1; /* tombol secondary */
+  --input: #d8d4d4;
+  --ring: #034cff; /* fokus = aksen */
+
+  /* aksen & status */
+  --primary: #201d1d; /* tombol primary: latar = warna teks */
+  --primary-foreground: #fdfcfc;
+  --destructive: #d92d20; /* --danger */
+  --brand: #034cff; /* --accent, satu-satunya warna interaktif */
+  --success: #12a150;
+  --warning: #c48a00;
+  --code-bg: #f1eeee;
+
+  /* sidebar: 240px sesuai DESIGN.MD §6 */
+  --sidebar: #f8f7f7;
+  --sidebar-foreground: #201d1d;
+  --sidebar-primary: #201d1d;
+  --sidebar-primary-foreground: #fdfcfc;
+  --sidebar-accent: #f1eeee;
+  --sidebar-accent-foreground: #201d1d;
+  --sidebar-border: #d8d4d4;
+  --sidebar-ring: #034cff;
+  --sidebar-width: 15rem;
+
+  /* Hanya dua nilai radius (DESIGN.MD §5). Ditulis eksplisit karena
+     `@theme inline` menghitung radius dari `calc(var(--radius) ± n)` yang
+     menghasilkan 2/4/6/10px kalau hanya `--radius` yang diubah. */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
+  --radius-4xl: 6px;
+
+  font-family: var(--font-plex), ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--foreground);
+  background: var(--background);
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .cms-scope {
+  --background: #100f0f; /* --bg */
+  --card: #181616; /* --surface */
+  --popover: #181616;
+  --muted: #211e1e; /* --surface-2 */
+  --secondary: #211e1e;
+  --accent: #211e1e;
+
+  --foreground: #f1ecec; /* --text */
+  --text-faint: #706b6b;
+  --card-foreground: #f1ecec;
+  --popover-foreground: #f1ecec;
+  --muted-foreground: #a29d9d; /* --text-muted */
+
+  --border: #302c2c; /* --border */
+  --border-strong: #4a4545; /* tombol secondary */
+  --input: #302c2c;
+  --ring: #5c8dff;
+
+  --primary: #f1ecec;
+  --primary-foreground: #100f0f;
+  --destructive: #ff6b5e; /* --danger */
+  --brand: #5c8dff;
+  --success: #3ddc84;
+  --warning: #fcd53a;
+  --code-bg: #211e1e;
+
+  --sidebar: #181616;
+  --sidebar-foreground: #f1ecec;
+  --sidebar-primary: #f1ecec;
+  --sidebar-primary-foreground: #100f0f;
+  --sidebar-accent: #211e1e;
+  --sidebar-accent-foreground: #f1ecec;
+  --sidebar-border: #302c2c;
+  --sidebar-ring: #5c8dff;
+}
+
+/* Fokus keyboard selalu terlihat: outline 2px aksen, offset 2px (§8). */
+.cms-scope :focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Sidebar di dalam `Frame`. Sidebar bawaan shadcn memakai `position: fixed`
+   di tepi kiri viewport, sehingga rail `border-x` pada `Frame` tertutup dan
+   sidebar berada di luar container. Diganti jadi `sticky` supaya ikut di dalam
+   frame, dan placeholder lebarnya (`sidebar-gap`) disembunyikan karena tidak
+   lagi dibutuhkan. Border kanannya disamakan hairline rail. */
+.cms-scope [data-slot="sidebar-gap"] {
+  display: none;
+}
+
+.cms-scope [data-slot="sidebar-container"] {
+  position: sticky;
+  inset: auto;
+  top: 0;
+  border-right-color: color-mix(in oklab, var(--sidebar-border) 60%, transparent);
+}
+
+/* Sisi kiri 2px aksen untuk item sidebar aktif (§6). */
+.cms-scope [data-active="true"] {
+  box-shadow: inset 2px 0 0 0 var(--brand);
+}
+
+/* Angka & kolom tabel selalu lurus (§4). */
+.cms-scope table {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grid garis vertikal + horizontal untuk latar halaman auth. Warna memakai
+   token --border, jadi otomatis mengikuti tema terang/gelap tanpa override
+   terpisah. Garis memudar ke tepi supaya panel login tetap jadi fokus. */
+.cms-scope .line-grid {
+  --grid-size: 48px; /* kelipatan spasi 4px (§5) */
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      var(--border) 0 1px,
+      transparent 1px var(--grid-size)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--border) 0 1px,
+      transparent 1px var(--grid-size)
+    );
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
+}
+
+/* Baris tabel: tinggi 36px, tanpa zebra, hover surface-2 (§6). */
+.cms-scope tbody tr {
+  transition: background-color 120ms ease-out;
+}
+.cms-scope tbody tr:hover {
+  background-color: var(--muted);
+}
+
+/* Kurangi gerak sesuai preferensi pengguna (§8). */
+@media (prefers-reduced-motion: reduce) {
+  .cms-scope *,
+  .cms-scope *::before,
+  .cms-scope *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

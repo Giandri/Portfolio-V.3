@@ -155,6 +155,12 @@ const SKILL_ALIASES: Record<string, string> = {
 
 const canon = (name: string) => SKILL_ALIASES[name] ?? name;
 
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 async function seed() {
   await db.siteSetting.upsert({
     where: { id: "singleton" },
@@ -185,13 +191,19 @@ async function seed() {
   for (const [order, project] of PROJECTS.entries()) {
     await db.project.create({
       data: {
+        slug: slugify(project.title),
         title: local(project.title, project.title),
         summary: project.summary,
         videoUrl: project.videoUrl,
         demoUrl: project.demoUrl,
         status: Status.PUBLISHED,
         order,
-        skills: { connect: [...new Set(project.techStack.map(canon))].map((name) => ({ name })) },
+        skills: {
+          create: [...new Set(project.techStack.map(canon))].map((name, skillOrder) => ({
+            order: skillOrder,
+            skill: { connect: { name } },
+          })),
+        },
       },
     });
   }

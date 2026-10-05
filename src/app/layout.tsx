@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { LenisProvider } from "@/components/lenis-provider";
 import { LanguageProvider } from "@/context/language-provider";
 import { getSiteContent } from "@/lib/content";
+import { db } from "@/lib/db";
+import { pickLocalized } from "@/lib/i18n-content";
 
 // Konten datang dari database, jadi halaman harus dirender per-request agar
 // perubahan dari dashboard admin langsung terlihat.
@@ -20,10 +22,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Giandri | Portfolio",
-  description: "-",
-};
+/**
+ * Metadata SEO diambil dari tabel `SiteSetting` (dikelola di dashboard).
+ * Bahasa diambil dari varian `en` karena pilihan bahasa pengguna disimpan di
+ * localStorage sehingga tidak tersedia di server.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await db.siteSetting
+    .findUnique({ where: { id: "singleton" } })
+    .catch(() => null);
+
+  const title = settings?.siteTitle ?? "Portfolio";
+  const description = settings?.description
+    ? pickLocalized(settings.description, "en")
+    : "";
+
+  // Open Graph butuh URL absolut, jadi path relatif diprefix siteUrl.
+  const base = settings?.siteUrl?.replace(/\/$/, "");
+  const ogImage = settings?.ogImage
+    ? base && settings.ogImage.startsWith("/")
+      ? `${base}${settings.ogImage}`
+      : settings.ogImage
+    : null;
+
+  return {
+    title,
+    description: description || undefined,
+    ...(settings?.favicon ? { icons: { icon: settings.favicon } } : {}),
+    openGraph: {
+      title,
+      description: description || undefined,
+      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+    },
+  };
+}
 
 export default async function RootLayout({
   children,

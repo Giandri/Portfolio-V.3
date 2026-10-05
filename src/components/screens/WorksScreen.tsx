@@ -29,7 +29,7 @@ export function WorksScreen({ onClose, onActivate }: { onClose: () => void; onAc
     videoSrc: p.videoUrl ?? "",
     title: pickLocalized(p.title, language),
     description: pickLocalized(p.summary, language),
-    techStack: p.skills.map((skill) => skill.name),
+    techStack: p.skills.map(({ skill }) => skill.name),
     link: p.demoUrl ?? undefined,
   }));
 
